@@ -1,4 +1,5 @@
 import csv
+from matplotlib import font_manager
 import matplotlib.pyplot as plt
 import math
 from matplotlib.offsetbox import AnchoredText
@@ -31,12 +32,32 @@ with open('D:\PythonProjects\TrumanBot\grades\grades.txt') as csv_file:
 def getTotalStudents(course):
     return course.arange + course.brange + course.crange + course.drange + course.frange
 
-def getCourse(department, number):
+def getCourse(searchCriteria):
+    currentMatches = 0
+    maxMatches = 0
     for course in courseList:
-        if department == course.department and number == course.number:
-            return course
-    course.title = "Not Found"
-    return course
+        for criteria in searchCriteria:
+            if criteria.lower() == str(course.department).lower():
+                currentMatches += 1
+            if criteria.lower() == str(course.title).lower():
+                currentMatches += 1
+            if criteria.lower() == str(course.number).lower():
+                currentMatches += 1
+            if criteria.lower() == str(course.section).lower():
+                currentMatches += 1
+            if criteria.lower() == str(course.term).lower():
+                currentMatches += 1
+            if criteria.lower() == str(course.au).lower():
+                currentMatches += 1
+            if criteria.lower() == str(course.instructor).lower():
+                currentMatches += 1
+        if (currentMatches > maxMatches):
+            maxMatches = currentMatches
+            maxMatchedCourse = course
+        currentMatches = 0
+    if (maxMatches == 0):
+        return Course("", "Not Found", "", "", "", "", "", 0, 0, 0, 0, 0, 0.0)
+    return maxMatchedCourse
 
 def getCourseString(department, number):
     res = 'Class not found! Please try again.'
@@ -70,8 +91,10 @@ def generateCourseImage(course):
        plt.yticks(range(1,max(gradesYAxis) + 2))
     elif (max(gradesYAxis) < 24):
        plt.yticks(range(0,max(gradesYAxis) + 6, 5))
-    plt.title('{} - {}'.format((course.title).title(), course.term))
+    plt.title('{} - {}'.format((course.title).title(), course.term), fontweight = 'bold')
     plt.grid(zorder = 0)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
     plt.savefig("graph.png")
     plt.close()
     image = Image.open('graph.png')

@@ -20,9 +20,8 @@ async def on_message(message):
 
   if msg.startswith('/grades'):
     info = msg.split()
-    dept = info[1]
-    num = info[2]
-    course1 = Course.getCourse(dept, num)
+    info.pop(0)
+    course1 = Course.getCourse(info)
     if (course1.title != "Not Found"):
       Course.generateCourseImage(course1)
       embed=discord.Embed(
@@ -33,11 +32,14 @@ async def on_message(message):
       name = 'MU Grades',
       icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
       )
+      embed.set_footer(
+        text="Data last retrieved on 6/17/2022"
+      )
       embed.add_field(name="**Instructor**", value="{}".format(course1.instructor.title()), inline=True)
       embed.add_field(name="**Section**", value="{}".format(course1.section), inline=True)
       embed.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(course1))), inline=True)
-      file = discord.File("D:\PythonProjects\TrumanBot\graph.png", filename="{}_{}.png".format(dept, num))
-      embed.set_image(url="attachment://{}_{}.png".format(dept, num))
+      file = discord.File("D:\PythonProjects\TrumanBot\graph.png", filename="{}_{}.png".format(course1.department, course1.number))
+      embed.set_image(url="attachment://{}_{}.png".format(course1.department, course1.number))
       await message.channel.send(file=file, embed=embed)
     else:
       embed=discord.Embed(
@@ -48,6 +50,7 @@ async def on_message(message):
       name = 'MU Grades',
       icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
       )
+
       await message.channel.send(embed=embed)
 
   if msg.startswith('/dining'):
