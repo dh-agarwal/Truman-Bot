@@ -2,6 +2,11 @@ import discord
 import dining.sabai as sabai
 import grades.Course as Course
 import datetime
+import os
+
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
 
 client = discord.Client()
 
@@ -18,7 +23,8 @@ async def on_message(message):
     dept = info[1]
     num = info[2]
     course1 = Course.getCourse(dept, num)
-    if (Course.generateCourseImage(dept, num)):
+    if (course1.title != "Not Found"):
+      Course.generateCourseImage(course1)
       embed=discord.Embed(
         color=0xF59F16,
         description = "**{} {}**".format(course1.department, course1.number),
@@ -30,7 +36,7 @@ async def on_message(message):
       embed.add_field(name="**Instructor**", value="{}".format(course1.instructor.title()), inline=True)
       embed.add_field(name="**Section**", value="{}".format(course1.section), inline=True)
       embed.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(course1))), inline=True)
-      file = discord.File("D:\PythonProjects\MizzouDiscordBot\graph.png", filename="{}_{}.png".format(dept, num))
+      file = discord.File("D:\PythonProjects\TrumanBot\graph.png", filename="{}_{}.png".format(dept, num))
       embed.set_image(url="attachment://{}_{}.png".format(dept, num))
       await message.channel.send(file=file, embed=embed)
     else:
@@ -131,4 +137,4 @@ async def on_message(message):
 
 
 #TOKEN
-client.run('OTg2NzkxNjAzODQwNjMwODA0.GKuSiv.jy6AsTP9Ktq2eRAfnWEEG7NZhUnKvXrMrxafhY')  
+client.run(os.getenv('TOKEN'))  
