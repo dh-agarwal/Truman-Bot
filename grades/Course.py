@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import math
 from matplotlib.offsetbox import AnchoredText
 from PIL import Image
+import re
 
 class Course:
     
@@ -32,30 +33,32 @@ with open('D:\PythonProjects\TrumanBot\grades\grades.txt') as csv_file:
 def getTotalStudents(course):
     return course.arange + course.brange + course.crange + course.drange + course.frange
 
-def getCourse(searchCriteria):
+def getCourse(searchCriteriaUnsplit):
+    searchCriteria = []
+    for criteria1 in searchCriteriaUnsplit:
+        for criteria2 in (re.split('(\d+|_)', criteria1)):
+            if criteria2 != '':
+                searchCriteria.append(criteria2)
     currentMatches = 0
     maxMatches = 0
     for course in courseList:
         for criteria in searchCriteria:
             criteria = criteria.lower()
-            criteriayear = criteria
             if criteria.lower() == "cs":
                 criteria = "cmp_sc"
             if criteria == str(course.department).lower():
                 currentMatches += 1
-            if criteria == str(course.title).lower():
-                currentMatches += 1
+            if criteria in str(course.title).lower():
+                currentMatches += .1
             if criteria == str(course.number).lower():
                 currentMatches += 1
             if criteria == str(course.section).lower():
                 currentMatches += 1
-            if (len(criteria) == 2 and criteria == str(course.term)[:2].lower()):
+            if criteria == str(course.term[:2]).lower():
+                currentMatches += .1
+            if criteria == str(course.term[-4:]).lower():
                 currentMatches += 1
-            if ((len(criteria) == 4) and (criteria == str(course.term)[2:6])):
-                currentMatches += 1
-            if criteriayear.lower() == str(course.term).lower():
-                currentMatches += 1
-            if criteria == str(course.instructor).lower():
+            if criteria in str(course.instructor).lower():
                 currentMatches += 1
         if (currentMatches > maxMatches):
             maxMatches = currentMatches
