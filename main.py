@@ -1,6 +1,7 @@
 import discord
 import dining.sabai as sabai
 import grades.Course as Course
+import grades.gradecalculations as gradecalculations
 import datetime
 import os
 
@@ -21,9 +22,9 @@ async def on_message(message):
   if msg.startswith('/grades'):
     info = msg.split()
     info.pop(0)
-    course1 = Course.getCourse(info)
+    course1 = gradecalculations.getCourse(info)
     if (course1.title != "Not Found"):
-      Course.generateCourseImage(course1)
+      gradecalculations.generateCourseImage(course1)
       embed=discord.Embed(
         color=0xF59F16,
         description = "**{} {}**".format(course1.department, course1.number),

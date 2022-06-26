@@ -1,10 +1,4 @@
 import csv
-from matplotlib import font_manager
-import matplotlib.pyplot as plt
-import math
-from matplotlib.offsetbox import AnchoredText
-from PIL import Image
-import re
 
 class Course:
     
@@ -30,78 +24,18 @@ with open('D:\PythonProjects\TrumanBot\grades\grades.txt') as csv_file:
     for row in csv_reader:
         courseList.append(Course(row[0],row[1],row[2],row[3],row[4],row[5],row[6],int(row[7]),int(row[8]),int(row[9]),int(row[10]),int(row[11]),float(row[12])))
 
+def getCourseList():
+    return courseList
+
+def getTerm(course):
+    if ("SP" in course.term):
+        return "Spring {}".format(course.term[-4:])
+    if ("FS" in course.term):
+        return "Fall {}".format(course.term[-4:])
+    if ("WS" in course.term):
+        return "Winter {}".format(course.term[-4:])
+    if ("SS" in course.term):
+        return "Summer {}".format(course.term[-4:])
+
 def getTotalStudents(course):
     return course.arange + course.brange + course.crange + course.drange + course.frange
-
-def getCourse(searchCriteriaUnsplit):
-    searchCriteria = []
-    for criteria1 in searchCriteriaUnsplit:
-        for criteria2 in (re.split('(\d+|_)', criteria1)):
-            if criteria2 != '':
-                searchCriteria.append(criteria2)
-    currentMatches = 0
-    maxMatches = 0
-    for course in courseList:
-        for criteria in searchCriteria:
-            criteria = criteria.lower()
-            if criteria.lower() == "cs":
-                criteria = "cmp_sc"
-            if criteria == str(course.department).lower():
-                currentMatches += 1
-            if criteria in str(course.title).lower():
-                currentMatches += .1
-            if criteria == str(course.number).lower():
-                currentMatches += 1
-            if criteria == str(course.section).lower():
-                currentMatches += 1
-            if criteria == str(course.term[:2]).lower():
-                currentMatches += .1
-            if criteria == str(course.term[-4:]).lower():
-                currentMatches += 1
-            if criteria in str(course.instructor).lower():
-                currentMatches += 1
-        if (currentMatches > maxMatches):
-            maxMatches = currentMatches
-            maxMatchedCourse = course
-        currentMatches = 0
-    if (maxMatches == 0):
-        return Course("", "Not Found", "", "", "", "", "", 0, 0, 0, 0, 0, 0.0)
-    return maxMatchedCourse
-
-def getCourseString(course):
-    res = ''
-    res += ("Department: " + course.department + "\n")
-    res += ("Title: " + course.title + "\n")
-    res += ("Number: " + course.number + "\n")
-    res += ("Section: " + course.section + "\n")
-    res += ("Term: " + course.term + "\n")
-    res += ("AU: " + course.au + "\n")
-    res += ("Instructor: " + course.instructor + "\n")
-    res += ("A Range: " + str(course.arange) + "\n")
-    res += ("B Range: " + str(course.brange) + "\n")
-    res += ("C Range: " + str(course.crange) + "\n")
-    res += ("D Range: " + str(course.drange) + "\n")
-    res += ("F Range: " + str(course.frange) + "\n")
-    res += ("Average Grade: " + str(course.avggrade) + "\n")
-    return res
-
-def generateCourseImage(course):
-    gradesXAxis = ("A", "B", "C", "D", "F")
-    gradesYAxis = [course.arange, course.brange, course.crange, course.drange, course.frange]
-    fig, ax = plt.subplots()
-    at = AnchoredText("Avg GPA: " + str(course.avggrade), prop=dict(size=12), frameon=True, loc='upper right')
-    ax.add_artist(at)
-    plt.bar(gradesXAxis, gradesYAxis, color=['forestgreen', 'yellowgreen', 'gold', 'salmon', 'orangered'], zorder = 3)
-    if (max(gradesYAxis) < 8):
-       plt.yticks(range(1,max(gradesYAxis) + 2))
-    elif (max(gradesYAxis) < 24):
-       plt.yticks(range(0,max(gradesYAxis) + 6, 5))
-    plt.title('{} - {}'.format((course.title).title(), course.term), fontweight = 'bold')
-    plt.grid(zorder = 0)
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
-    plt.savefig("graph.png")
-    plt.close()
-    image = Image.open('graph.png')
-    new_image = image.resize((1280, 960))
-    new_image.save('graph.png')
