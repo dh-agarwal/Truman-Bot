@@ -4,7 +4,6 @@ import grades.Course as Course
 import grades.gradecalculations as gradecalculations
 import datetime
 import os
-
 from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv())
