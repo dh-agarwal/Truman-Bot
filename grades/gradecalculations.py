@@ -20,7 +20,7 @@ def getCourse(searchCriteriaUnsplit):
             criteria = intendedwords.getIntendedWord(criteria)
             if criteria in str(course.department).lower():
                 currentMatches += 1
-            if criteria in str(course.title).lower():
+            if len(criteria) > 2 and criteria in str(course.title).lower():
                 currentMatches += .1
             if criteria == str(course.number).lower():
                 currentMatches += 1
@@ -30,14 +30,14 @@ def getCourse(searchCriteriaUnsplit):
                 currentMatches += .1
             if criteria == str(course.term[-4:]).lower():
                 currentMatches += 1
-            if criteria in str(course.instructor).lower():
+            if len(criteria) > 2 and criteria in str(course.instructor).lower():
                 currentMatches += 1
         if (currentMatches > maxMatches):
             maxMatches = currentMatches
             maxMatchedCourse = course
         currentMatches = 0
     if (maxMatches == 0):
-        return Course("", "Not Found", "", "", "", "", "", 0, 0, 0, 0, 0, 0.0)
+        return Course.Course("", "Not Found", "", "", "", "", "", 0, 0, 0, 0, 0, 0.0)
     return maxMatchedCourse
 
 def getCourseString(course):
