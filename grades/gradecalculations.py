@@ -16,22 +16,22 @@ def getCourse(searchCriteriaUnsplit):
     currentMatches = 0
     maxMatches = 0
     for course in courseList:
-        for criteria in searchCriteria:
-            criteria = intendedwords.getIntendedWord(criteria)
-            if criteria in str(course.department).lower():
-                currentMatches += 1
-            if len(criteria) > 2 and criteria in str(course.title).lower():
-                currentMatches += .1
-            if criteria == str(course.number).lower():
-                currentMatches += 1
-            if criteria == str(course.section).lower():
-                currentMatches += 1
-            if criteria == str(course.term[:2]).lower():
-                currentMatches += .1
-            if criteria == str(course.term[-4:]).lower():
-                currentMatches += 1
-            if len(criteria) > 2 and criteria in str(course.instructor).lower():
-                currentMatches += 1
+        for criteria in range(len(searchCriteria)):
+            searchCriteria[criteria] = intendedwords.getIntendedWord(searchCriteria[criteria])
+            if searchCriteria[criteria] in str(course.department).lower():
+                currentMatches += (10-(criteria))
+            if len(searchCriteria[criteria]) > 2 and searchCriteria[criteria] in str(course.title).lower():
+                currentMatches += (10-(criteria))
+            if searchCriteria[criteria] == str(course.number).lower():
+                currentMatches += (10-(criteria))
+            if searchCriteria[criteria] == str(course.section).lower():
+                currentMatches += (10-(criteria))
+            if searchCriteria[criteria] == str(course.term[:2]).lower():
+                currentMatches += ((10-(criteria))/2)
+            if searchCriteria[criteria] == str(course.term[-4:]).lower():
+                currentMatches += (10-(criteria))
+            if len(searchCriteria[criteria]) > 2 and searchCriteria[criteria] in str(course.instructor).lower():
+                currentMatches += (10-(criteria))
         if (currentMatches > maxMatches):
             maxMatches = currentMatches
             maxMatchedCourse = course
