@@ -19,6 +19,7 @@ async def on_message(message):
     return
 
   if msg.startswith('/grades'):
+    msg = msg.strip()
     info = msg.split()
     info.pop(0)
     course1 = gradecalculations.getCourse(info)

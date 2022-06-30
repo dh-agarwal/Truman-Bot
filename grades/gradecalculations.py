@@ -1,7 +1,6 @@
 import grades.Course as Course
 import matplotlib.pyplot as plt
 from matplotlib.offsetbox import AnchoredText
-from PIL import Image
 import grades.intendedwords as intendedwords
 import re
 
@@ -60,20 +59,26 @@ def getCourseString(course):
 def generateCourseImage(course):
     gradesXAxis = ("A", "B", "C", "D", "F")
     gradesYAxis = [course.arange, course.brange, course.crange, course.drange, course.frange]
+    font = {'family' : 'Tahoma',
+        'size'   : 24}
+    plt.rc('font', **font)
+
     fig, ax = plt.subplots()
-    at = AnchoredText("Avg GPA: " + str(course.avggrade), prop=dict(size=12), frameon=True, loc='upper right')
+    fig.set_size_inches(20, 9)
+    at = AnchoredText("Avg GPA: " + str(course.avggrade), prop=dict(size=28), frameon=True, loc='upper right')
     ax.add_artist(at)
+    ax1 = plt.subplot()
+    ax1.tick_params('y', length=20)
+
     plt.bar(gradesXAxis, gradesYAxis, color=['forestgreen', 'yellowgreen', 'gold', 'salmon', 'orangered'], zorder = 3)
     if (max(gradesYAxis) < 8):
        plt.yticks(range(1,max(gradesYAxis) + 2))
     elif (max(gradesYAxis) < 24):
        plt.yticks(range(0,max(gradesYAxis) + 6, 5))
-    plt.title('{} - {}'.format((course.title).title(), Course.getTerm(course)), fontweight = 'bold')
+    plt.title('{} - {}'.format((course.title).title(), Course.getTerm(course)),fontweight = 'bold', fontsize = 32, pad=30.0)
     plt.grid(zorder = 0)
+    plt.subplots_adjust( bottom=.1)
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
-    plt.savefig("graph.png")
+    plt.savefig("graph.png", bbox_inches='tight',pad_inches = .5)
     plt.close()
-    image = Image.open('graph.png')
-    new_image = image.resize((1280, 960))
-    new_image.save('graph.png')
