@@ -1,21 +1,38 @@
 import csv
+from dataclasses import dataclass
 
+@dataclass
 class Course:
-    
-    def __init__(self, department, title, number, section, term, au, instructor, arange, brange, crange, drange, frange, avggrade):
-        self.department = department
-        self.title = title
-        self.number = number
-        self.section = section
-        self.term = term
-        self.au = au
-        self.instructor = instructor
-        self.arange = arange
-        self.brange = brange
-        self.crange = crange
-        self.drange = drange
-        self.frange = frange
-        self.avggrade = avggrade
+    department: str
+    title: str
+    number: str
+    section: str
+    term: str
+    au: str
+    instructor: str
+    arange: int
+    brange: int
+    crange: int
+    drange: int
+    frange: int
+    avggrade: float
+
+    def __str__(self):
+        res = ''
+        res += ("Department: " + self.department + "\n")
+        res += ("Title: " + self.title + "\n")
+        res += ("Number: " + self.number + "\n")
+        res += ("Section: " + self.section + "\n")
+        res += ("Term: " + self.term + "\n")
+        res += ("AU: " + self.au + "\n")
+        res += ("Instructor: " + self.instructor + "\n")
+        res += ("A Range: " + str(self.arange) + "\n")
+        res += ("B Range: " + str(self.brange) + "\n")
+        res += ("C Range: " + str(self.crange) + "\n")
+        res += ("D Range: " + str(self.drange) + "\n")
+        res += ("F Range: " + str(self.frange) + "\n")
+        res += ("Average Grade: " + str(self.avggrade) + "\n")
+        return res
 
 courseList = []
 
