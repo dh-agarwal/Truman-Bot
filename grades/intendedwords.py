@@ -3,7 +3,8 @@ intendedWords = {
     "fall": "fs",
     "spring": "sp",
     "winter": "ws",
-    "summer": "ss"
+    "summer": "ss",
+    "dsgn" : "design"
 }
 
 def getIntendedWord(criteria):

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 @dataclass
 class Course:
-    department: str
+    dept: str
     title: str
     number: str
     section: str
@@ -15,11 +15,12 @@ class Course:
     crange: int
     drange: int
     frange: int
-    avggrade: float
+    average: float
+    median: float = 0.0
 
     def __str__(self):
         res = ''
-        res += ("Department: " + self.department + "\n")
+        res += ("Department: " + self.dept + "\n")
         res += ("Title: " + self.title + "\n")
         res += ("Number: " + self.number + "\n")
         res += ("Section: " + self.section + "\n")
@@ -31,15 +32,16 @@ class Course:
         res += ("C Range: " + str(self.crange) + "\n")
         res += ("D Range: " + str(self.drange) + "\n")
         res += ("F Range: " + str(self.frange) + "\n")
-        res += ("Average Grade: " + str(self.avggrade) + "\n")
+        res += ("Average: " + str(self.average) + "\n")
+        res += ("Median: " + str(self.median) + "\n")
         return res
 
-courseList = []
+def setMedian(course):
+    if getTotalStudents(course) == 0:
+        course.median = 0.000
+    course.median = round(((4*course.arange + 3*course.brange + 2*course.crange + course.drange)/getTotalStudents(course)),2)
 
-with open('grades.txt') as csv_file:
-    csv_reader = csv.reader(csv_file, delimiter='\t')
-    for row in csv_reader:
-        courseList.append(Course(row[0],row[1],row[2],row[3],row[4],row[5],row[6],int(row[7]),int(row[8]),int(row[9]),int(row[10]),int(row[11]),float(row[12])))
+courseList = []
 
 def getCourseList():
     return courseList
@@ -56,3 +58,10 @@ def getTerm(course):
 
 def getTotalStudents(course):
     return course.arange + course.brange + course.crange + course.drange + course.frange
+
+with open('grades.txt') as csv_file:
+    csv_reader = csv.reader(csv_file, delimiter='\t')
+    for row in csv_reader:
+        course1 = Course(row[0],row[1],row[2],row[3],row[4],row[5],row[6],int(row[7]),int(row[8]),int(row[9]),int(row[10]),int(row[11]),round(float(row[12]),2),0.0)
+        setMedian(course1)
+        courseList.append(course1)

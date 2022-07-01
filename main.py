@@ -27,7 +27,7 @@ async def on_message(message):
       gradecalculations.generateCourseImage(course1)
       embed=discord.Embed(
         color=0xF59F16,
-        description = "**{} {}**".format(course1.department, course1.number),
+        description = "**{} {}**".format(course1.dept, course1.number),
       )
       embed.set_author(
       name = 'MU Grades',
@@ -39,8 +39,8 @@ async def on_message(message):
       embed.add_field(name="**Instructor**", value="{}".format(course1.instructor.title()), inline=True)
       embed.add_field(name="**Section**", value="{}".format(course1.section), inline=True)
       embed.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(course1))), inline=True)
-      file = discord.File("graph.png", filename="{}_{}.png".format(course1.department, course1.number))
-      embed.set_image(url="attachment://{}_{}.png".format(course1.department, course1.number))
+      file = discord.File("graph.png", filename="{}_{}.png".format(course1.dept, course1.number))
+      embed.set_image(url="attachment://{}_{}.png".format(course1.dept, course1.number))
       await message.channel.send(file=file, embed=embed)
     else:
       embed=discord.Embed(

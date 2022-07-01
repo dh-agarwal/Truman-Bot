@@ -17,7 +17,7 @@ def getCourse(searchCriteriaUnsplit):
     for course in courseList:
         for criteria in range(len(searchCriteria)):
             searchCriteria[criteria] = intendedwords.getIntendedWord(searchCriteria[criteria])
-            if searchCriteria[criteria] in str(course.department).lower():
+            if searchCriteria[criteria] in str(course.dept).lower():
                 currentMatches += (10-(criteria))
             if len(searchCriteria[criteria]) > 2 and searchCriteria[criteria] in str(course.title).lower():
                 currentMatches += (10-(criteria))
@@ -48,8 +48,9 @@ def generateCourseImage(course):
 
     fig, ax = plt.subplots()
     fig.set_size_inches(20, 9)
-    at = AnchoredText("Avg GPA: " + str(course.avggrade), prop=dict(size=30), frameon=True, loc='upper right')
+    at = AnchoredText("Average: {:.2f}/4.00\nMedian:  {:.2f}/4.00".format(course.average, course.median), prop=dict(size=30), frameon=True, loc='upper right')
     ax.add_artist(at)
+
     ax1 = plt.subplot()
     ax1.tick_params('y', length=20, pad=10.0)
     ay1 = plt.subplot()
