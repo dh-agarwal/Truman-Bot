@@ -19,7 +19,7 @@ def getCourse(searchCriteriaUnsplit):
             searchCriteria[criteria] = intendedwords.getIntendedWord(searchCriteria[criteria])
             if searchCriteria[criteria] in str(course.dept).lower():
                 currentMatches += (10-(criteria))
-            if len(searchCriteria[criteria]) > 2 and searchCriteria[criteria] in str(course.title).lower():
+            if searchCriteria[criteria] != "sp" and searchCriteria[criteria] != "ws" and searchCriteria[criteria] != "ss" and searchCriteria[criteria] != "fs" and searchCriteria[criteria] in str(course.title).lower():
                 currentMatches += (10-(criteria))
             if searchCriteria[criteria] == str(course.number).lower():
                 currentMatches += (10-(criteria))
