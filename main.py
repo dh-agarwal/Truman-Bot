@@ -5,6 +5,8 @@ import grades.gradecalculations as gradecalculations
 import datetime
 import os
 from dotenv import load_dotenv, find_dotenv
+import directory.directorysearch as directorysearch
+import directory.Person as Person
 
 load_dotenv(find_dotenv())
 
@@ -18,6 +20,65 @@ async def on_message(message):
   if message.author == client.user:
     return
 
+  if msg.startswith('/directory'):
+    info = msg.split()
+    if (len(info) == 2):
+      p1 = directorysearch.getPerson(info[1], "")
+    elif (len(info) > 2):
+      p1 = directorysearch.getPerson(info[1], info[2])
+    else:
+      p1 = (Person.Person("No results", "", "", "", "", "", "", ""))
+
+    if(p1.name == "No results"):
+      embed=discord.Embed(
+      description = "Student was not found! Please try again.",
+      color=0xF59F16,
+      )
+      embed.set_author(
+      url="https://missouri.edu/directory",
+      name = 'MU Directory',
+      icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+      )
+    elif(p1.name == "Too many results"):
+      embed=discord.Embed(
+      description = "Too many results were returned! Please be more specific.",
+      color=0xF59F16,
+      )
+      embed.set_author(
+      url="https://missouri.edu/directory",
+      name = 'MU Directory',
+      icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+      )
+    else:
+      embed=discord.Embed(
+      title="{}".format(p1.name),
+      color=0xF59F16,
+      )
+      embed.set_author(
+      url="https://missouri.edu/directory",
+      name = 'MU Directory',
+      icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+      )
+      embed.set_thumbnail(url="https://www.bangory.org/wp-content/uploads/2016/05/person-icon-233x300.png")
+      if p1.title != "":
+        embed.add_field(name="Title", value="{}".format(p1.title), inline=True)
+      if p1.dept != "":
+        embed.add_field(name="Department", value="{}".format(p1.dept), inline=True)
+      if p1.email != "":
+        embed.add_field(name="Email", value="{}".format(p1.email), inline=True)
+      if p1.phone != "":
+        embed.add_field(name="Phone", value="{}".format(p1.phone), inline=True)
+      if p1.address != "":
+        embed.add_field(name="Address", value="{}".format(p1.address), inline=True)
+      if p1.city != "" and p1.state == "":
+        embed.add_field(name="City", value="{}, {}".format(p1.city), inline=True)
+      if p1.city == "" and p1.state != "":
+        embed.add_field(name="State", value="{}, {}".format(p1.state), inline=True)
+      if p1.city != "" and p1.state != "":
+        embed.add_field(name="City/State", value="{}, {}".format(p1.city, p1.state), inline=True)
+
+    await message.channel.send(embed=embed)
+
   if msg.startswith('/grades'):
     msg = msg.strip()
     info = msg.split()
@@ -25,9 +86,9 @@ async def on_message(message):
     course1 = gradecalculations.getCourse(info)
     if (course1.title != "Not Found"):
       gradecalculations.generateCourseImage(course1)
-      embed=discord.Embed(
+      embed = discord.Embed(
         color=0xF59F16,
-        description = "**{} {}**".format(course1.dept, course1.number),
+        title = "**{} {}**".format(course1.dept, course1.number),
       )
       embed.set_author(
       name = 'MU Grades',
