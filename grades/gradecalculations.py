@@ -21,15 +21,19 @@ def getCourse(searchCriteriaUnsplit):
             searchCriteria[criteria] = intendedwords.getIntendedWord(searchCriteria[criteria])
             matched = False
             if matched == False:
-                if searchCriteria[criteria] in str(course.dept).lower():
+                if searchCriteria[criteria] in course.dept.lower():
                     currentMatches += (10-(criteria))
                     matched = True
             if matched == False:
-                if searchCriteria[criteria] == str(course.number).lower():
+                if len(searchCriteria[criteria]) > 2 and searchCriteria[criteria] in (course.title.lower().split()):
                     currentMatches += (10-(criteria))
                     matched = True
             if matched == False:
-                if searchCriteria[criteria] == str(course.section).lower():
+                if searchCriteria[criteria] == course.number.lower():
+                    currentMatches += (10-(criteria))
+                    matched = True
+            if matched == False:
+                if searchCriteria[criteria] == course.section.lower():
                     currentMatches += (10-(criteria))
                     matched = True
                 elif searchCriteria[criteria].isdigit() and course.section.isdigit():
@@ -37,11 +41,11 @@ def getCourse(searchCriteriaUnsplit):
                         currentMatches += (10-(criteria))
                         matched = True
             if matched == False:
-                if searchCriteria[criteria] == str(course.term[:2]).lower():
+                if searchCriteria[criteria] == course.term[:2].lower():
                     currentMatches += ((10-(criteria))/2)
                     matched = True
             if matched == False:
-                if searchCriteria[criteria] == str(course.term[-4:]).lower():
+                if searchCriteria[criteria] == course.term[-4:].lower():
                     currentMatches += (10-(criteria))
                     matched = True
             if matched == False:
