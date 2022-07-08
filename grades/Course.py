@@ -1,5 +1,6 @@
 import csv
 from dataclasses import dataclass
+import statistics
 
 @dataclass
 class Course:
@@ -16,7 +17,6 @@ class Course:
     drange: int
     frange: int
     average: float
-    median: float = 0.0
 
     def __str__(self):
         res = ''
@@ -35,11 +35,6 @@ class Course:
         res += ("Average: " + str(self.average) + "\n")
         res += ("Median: " + str(self.median) + "\n")
         return res
-
-def setMedian(course):
-    if getTotalStudents(course) == 0:
-        course.median = 0.000
-    course.median = round(((4*course.arange + 3*course.brange + 2*course.crange + course.drange)/getTotalStudents(course)),2)
 
 courseList = []
 
@@ -62,6 +57,5 @@ def getTotalStudents(course):
 with open('grades.txt') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter='\t')
     for row in csv_reader:
-        course1 = Course(row[0],row[1],row[2],row[3],row[4],row[5],row[6],int(row[7]),int(row[8]),int(row[9]),int(row[10]),int(row[11]),round(float(row[12]),2),0.0)
-        setMedian(course1)
+        course1 = Course(row[0],row[1],row[2],row[3],row[4],row[5],row[6],int(row[7]),int(row[8]),int(row[9]),int(row[10]),int(row[11]),round(float(row[12]),2))
         courseList.append(course1)

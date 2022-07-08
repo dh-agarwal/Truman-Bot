@@ -1,3 +1,4 @@
+from calendar import c
 import grades.Course as Course
 import matplotlib.pyplot as plt
 from matplotlib.offsetbox import AnchoredText
@@ -14,23 +15,39 @@ def getCourse(searchCriteriaUnsplit):
                 searchCriteria.append(criteria2)
     currentMatches = 0
     maxMatches = 0
+    matched = False
     for course in courseList:
         for criteria in range(len(searchCriteria)):
             searchCriteria[criteria] = intendedwords.getIntendedWord(searchCriteria[criteria])
-            if searchCriteria[criteria] in str(course.dept).lower():
-                currentMatches += (10-(criteria))
-            if searchCriteria[criteria] != "sp" and searchCriteria[criteria] != "ws" and searchCriteria[criteria] != "ss" and searchCriteria[criteria] != "fs" and searchCriteria[criteria] in str(course.title).lower():
-                currentMatches += (10-(criteria))
-            if searchCriteria[criteria] == str(course.number).lower():
-                currentMatches += (10-(criteria))
-            if searchCriteria[criteria] == str(course.section).lower():
-                currentMatches += (10-(criteria))
-            if searchCriteria[criteria] == str(course.term[:2]).lower():
-                currentMatches += ((10-(criteria))/2)
-            if searchCriteria[criteria] == str(course.term[-4:]).lower():
-                currentMatches += (10-(criteria))
-            if len(searchCriteria[criteria]) > 2 and searchCriteria[criteria] in str(course.instructor).lower():
-                currentMatches += (10-(criteria))
+            matched = False
+            if matched == False:
+                if searchCriteria[criteria] in str(course.dept).lower():
+                    currentMatches += (10-(criteria))
+                    matched = True
+            if matched == False:
+                if searchCriteria[criteria] == str(course.number).lower():
+                    currentMatches += (10-(criteria))
+                    matched = True
+            if matched == False:
+                if searchCriteria[criteria] == str(course.section).lower():
+                    currentMatches += (10-(criteria))
+                    matched = True
+                elif searchCriteria[criteria].isdigit() and course.section.isdigit():
+                    if int(searchCriteria[criteria]) == int(course.section):
+                        currentMatches += (10-(criteria))
+                        matched = True
+            if matched == False:
+                if searchCriteria[criteria] == str(course.term[:2]).lower():
+                    currentMatches += ((10-(criteria))/2)
+                    matched = True
+            if matched == False:
+                if searchCriteria[criteria] == str(course.term[-4:]).lower():
+                    currentMatches += (10-(criteria))
+                    matched = True
+            if matched == False:
+                if searchCriteria[criteria] in (re.split(',| ', course.instructor.lower())):
+                    currentMatches += (10-(criteria))
+                    matched = True
         if (currentMatches > maxMatches):
             maxMatches = currentMatches
             maxMatchedCourse = course
@@ -48,7 +65,7 @@ def generateCourseImage(course):
 
     fig, ax = plt.subplots()
     fig.set_size_inches(20, 9)
-    at = AnchoredText("Average: {:.2f}/4.00\nMedian:  {:.2f}/4.00".format(course.average, course.median), prop=dict(size=30), frameon=True, loc='upper right')
+    at = AnchoredText("Average: {:.2f}/4.00".format(course.average), prop=dict(size=30), frameon=True, loc='upper right')
     ax.add_artist(at)
 
     ax1 = plt.subplot()

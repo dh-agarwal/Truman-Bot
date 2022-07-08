@@ -1,4 +1,4 @@
-Commands that Truman Bot will use:
+Commands that Truman Bot uses:
 
     /grades - Displays the grade distribution for the specified class in a nicely formatted bar table
         /grades [subject] [number] [professor last name (optional)]
@@ -9,8 +9,12 @@ Commands that Truman Bot will use:
         /dining help
         /dining open
 
+    /directory - Searches through the directory, displays the student's information
+        /directory [name]
+        /directory help
 
 Other commands:
+
     Shows hours/info for rec:
         /rec
 
@@ -28,10 +32,3 @@ Other commands:
 
     Rate my professors:
         /ratemyprofessors [professor name]
-
-    
-Stuff to do later after first version:
-
-    /directory - Searches through the directory, displays the student's information
-        /directory [name]
-        /directory help
