@@ -33,7 +33,6 @@ class Course:
         res += ("D Range: " + str(self.drange) + "\n")
         res += ("F Range: " + str(self.frange) + "\n")
         res += ("Average: " + str(self.average) + "\n")
-        res += ("Median: " + str(self.median) + "\n")
         return res
 
 courseList = []
