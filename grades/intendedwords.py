@@ -1,9 +1,9 @@
 intendedWords = {
-    "cs": "cmp_sc",
     "fall": "fs",
     "spring": "sp",
     "winter": "ws",
     "summer": "ss",
+    "cs": "cmp_sc",
     "dsgn": "design",
     "stats": "stat",
     "statistics": "stat",
