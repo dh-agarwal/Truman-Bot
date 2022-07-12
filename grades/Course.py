@@ -1,6 +1,5 @@
 import csv
 from dataclasses import dataclass
-import statistics
 
 @dataclass
 class Course:
@@ -35,11 +34,6 @@ class Course:
         res += ("Average: " + str(self.average) + "\n")
         return res
 
-courseList = []
-
-def getCourseList():
-    return courseList
-
 def getTerm(course):
     if ("SP" in course.term):
         return "Spring {}".format(course.term[-4:])
@@ -53,8 +47,15 @@ def getTerm(course):
 def getTotalStudents(course):
     return course.arange + course.brange + course.crange + course.drange + course.frange
 
-with open('grades.txt') as csv_file:
-    csv_reader = csv.reader(csv_file, delimiter='\t')
-    for row in csv_reader:
-        course1 = Course(row[0],row[1],row[2],row[3],row[4],row[5],row[6],int(row[7]),int(row[8]),int(row[9]),int(row[10]),int(row[11]),round(float(row[12]),2))
-        courseList.append(course1)
+courseList = []
+
+for year in range(2022,2009,-1):
+    with open('grades/gradedata/grades{}.csv'.format(year)) as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        next(csv_reader)
+        for row in csv_reader:
+            course1 = Course(row[0],row[1],row[2],row[3],row[4],row[5],row[6],int(row[7]),int(row[8]),int(row[9]),int(row[10]),int(row[11]),float(row[12]))
+            courseList.append(course1)
+
+def getCourseList():
+    return courseList

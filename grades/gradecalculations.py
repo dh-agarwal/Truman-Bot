@@ -80,5 +80,5 @@ def generateCourseImage(course):
     plt.subplots_adjust( bottom=.1)
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
-    plt.savefig("graph.png", bbox_inches='tight',pad_inches = .5)
+    plt.savefig("grades/graph.png", bbox_inches='tight',pad_inches = .5)
     plt.close()

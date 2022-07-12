@@ -95,12 +95,12 @@ async def on_message(message):
       icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
       )
       embed.set_footer(
-        text="Data last updated on 6/17/2022"
+        text="Data last updated on 7/10/2022"
       )
       embed.add_field(name="**Instructor**", value="{}".format(course1.instructor.title()), inline=True)
       embed.add_field(name="**Section**", value="{}".format(course1.section), inline=True)
       embed.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(course1))), inline=True)
-      file = discord.File("graph.png", filename="{}_{}.png".format(course1.dept, course1.number))
+      file = discord.File("grades/graph.png", filename="{}_{}.png".format(course1.dept, course1.number))
       embed.set_image(url="attachment://{}_{}.png".format(course1.dept, course1.number))
       await message.channel.send(file=file, embed=embed)
     else:
