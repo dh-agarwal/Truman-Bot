@@ -154,22 +154,22 @@ async def on_message(message):
         url="https://missouri.edu/covid",
         description="""
 **Updates**
-• As the spring [2022](https://google.com) semester comes to a close, we have reached a new stage as vaccination and testing availability, treatments, and changes in guidance from the Centers from Disease Control have all evolved. In recognition of this changed reality, President Mun Choi has suspended UM System policy HR-702, which set requirements and expectations of staff and faculty regarding COVID-19 safety practices.
+• As the spring 2022 semester comes to a close, we have reached a new stage as vaccination and testing availability, treatments, and changes in guidance from the Centers from Disease Control have all evolved. In recognition of this changed reality, President Mun Choi has suspended UM System policy [HR-702](https://www.umsystem.edu/ums/rules/hrm/hr700/hr702), which set requirements and expectations of staff and faculty regarding COVID-19 safety practices.
 • Additionally, students are no longer required to submit reports of positive COVID tests to the university.
-• The university’s data-tracking dashboard was suspended at the conclusion of the spring semester on May 13, 2022. Archived data can be found on the case data page.
-• Faculty and staff members are expected to manage their own personal health regarding COVID as they do for other contagious illnesses. We encourage everyone to follow the latest guidance on the CDC website.
+• The university’s data-tracking dashboard was suspended at the conclusion of the spring semester on May 13, 2022. Archived data can be found on the [case data](https://missouri.edu/covid/cases) page.
+• Faculty and staff members are expected to manage their own personal health regarding COVID as they do for other contagious illnesses. We encourage everyone to follow the latest guidance on the [CDC website](https://www.cdc.gov/coronavirus/2019-ncov/your-health/about-covid-19.html).
 
 **Vaccinations**
-• Students can call the MU Student Health Center to schedule an appointment for a vaccine or a booster shot (573-882-7481).
+• Students can call the [Student Health Center](https://studenthealth.missouri.edu/) to schedule an appointment for a vaccine or a booster shot (573-882-7481).
 
 **Testing**
-• MU students should contact the Student Health Center at 573-882-7481 for testing.
+• MU students should contact the [Student Health Center](https://studenthealth.missouri.edu/) at 573-882-7481 for testing.
 • Hours: Mon./Tues./Thurs./Fri. 8 a.m.– 5 p.m, Wed. 9 a.m. – 5 p.m.
 • **Please note:** The Student Health Center is closed on Saturday and Sunday.
 
 **Masking**
 • People may choose to mask at any time. People who have been exposed to someone with COVID-19 should wear a mask. If you have symptoms, you should stay home.
-• If you are at high risk for severe illness, talk to your health care provider about whether you need to wear a mask and take other precautions.
+• If you are [at high risk for severe illness](https://www.cdc.gov/coronavirus/2019-ncov/science/community-levels.html#anchor_47145), talk to your health care provider about whether you need to wear a mask and take other precautions.
 """,
         color=0xF59F16,
     )
