@@ -147,6 +147,42 @@ async def on_message(message):
   #     await message.channel.send(embed=embed)
 
 
+#COVID
+  if (msg.startswith('/covid')):
+    embed=discord.Embed(
+        title="Mizzou Covid-19 Information",
+        url="https://missouri.edu/covid",
+        description="""
+**Updates**
+• As the spring [2022](https://google.com) semester comes to a close, we have reached a new stage as vaccination and testing availability, treatments, and changes in guidance from the Centers from Disease Control have all evolved. In recognition of this changed reality, President Mun Choi has suspended UM System policy HR-702, which set requirements and expectations of staff and faculty regarding COVID-19 safety practices.
+• Additionally, students are no longer required to submit reports of positive COVID tests to the university.
+• The university’s data-tracking dashboard was suspended at the conclusion of the spring semester on May 13, 2022. Archived data can be found on the case data page.
+• Faculty and staff members are expected to manage their own personal health regarding COVID as they do for other contagious illnesses. We encourage everyone to follow the latest guidance on the CDC website.
+
+**Vaccinations**
+• Students can call the MU Student Health Center to schedule an appointment for a vaccine or a booster shot (573-882-7481).
+
+**Testing**
+• MU students should contact the Student Health Center at 573-882-7481 for testing.
+• Hours: Mon./Tues./Thurs./Fri. 8 a.m.– 5 p.m, Wed. 9 a.m. – 5 p.m.
+• **Please note:** The Student Health Center is closed on Saturday and Sunday.
+
+**Masking**
+• People may choose to mask at any time. People who have been exposed to someone with COVID-19 should wear a mask. If you have symptoms, you should stay home.
+• If you are at high risk for severe illness, talk to your health care provider about whether you need to wear a mask and take other precautions.
+""",
+        color=0xF59F16,
+    )
+    embed.set_author(
+      name = "MU COVID-19 INFORMATION",
+      url="https://missouri.edu/covid",
+      icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+    )
+    embed.set_footer(
+      text="*Information last updated as of 07/13/2022"
+    )
+    await message.channel.send(embed=embed)
+
 #GIFCOMMANDS
   if (msg == '/dance'):
     embed=discord.Embed(
