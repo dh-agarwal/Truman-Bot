@@ -21,6 +21,7 @@ async def on_message(message):
   if message.author == client.user:
     return
 
+#DIRECTORY
   if msg.startswith('/directory'):
     info = msg.split()
     if (len(info) == 2):
@@ -80,6 +81,7 @@ async def on_message(message):
 
     await message.channel.send(embed=embed)
 
+#GRADES
   if msg.startswith('/grades'):
     msg = msg.strip()
     info = msg.split()
@@ -152,7 +154,7 @@ async def on_message(message):
   if (msg.startswith('/rec')):
     rechours = rec.getDaysDictionary(rec.getWeekDictionary())
     embed=discord.Embed(
-        title="Mizzou Rec Facility Hours",
+        title="Rec Center Facility Hours",
         url="https://mizzourec.com/facilities/information/hours/",
         description="""
 **Sunday:** {}
