@@ -118,36 +118,36 @@ async def on_message(message):
 
       await message.channel.send(embed=embed)
 
-  if msg.startswith('/dining'):
-    info = msg.split()
-    hall = info[1]
-    if hall == "sabai":
-      sabaibreakfaststring = sabai.getSabaiBreakfast()
-      sabailunchstring = sabai.getSabaiLunch()
-      name = sabai.getName()
+  # if msg.startswith('/dining'):
+  #   info = msg.split()
+  #   hall = info[1]
+  #   if hall == "sabai":
+  #     sabaibreakfaststring = sabai.getSabaiBreakfast()
+  #     sabailunchstring = sabai.getSabaiLunch()
+  #     name = sabai.getName()
 
-      now = datetime.datetime.now()
-      pm = "PM" if now.hour>11 else "AM"
-      embed=discord.Embed(
-        title="Today's " + name + " Menu",
-        url="https://dining.missouri.edu/locations/sabai-summer/",
-        description= sabaibreakfaststring + "\n" + sabailunchstring,
-        color=0xF59F16,
-      )
-      embed.set_author(
-      name = 'Sabai',
-      icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
-      )
-      embed.set_footer(
-        text="This menu is subject to change  •  Today at " + str((now.hour)%12) + ":" + str(now.minute) + " " + pm
-      )
-      await message.channel.send(embed=embed)
-    else:
-      embed=discord.Embed(
-        description = "Dining hall was not found! Please try again",
-        color=0xF59F16,
-      )
-      await message.channel.send(embed=embed)
+  #     now = datetime.datetime.now()
+  #     pm = "PM" if now.hour>11 else "AM"
+  #     embed=discord.Embed(
+  #       title="Today's " + name + " Menu",
+  #       url="https://dining.missouri.edu/locations/sabai-summer/",
+  #       description= sabaibreakfaststring + "\n" + sabailunchstring,
+  #       color=0xF59F16,
+  #     )
+  #     embed.set_author(
+  #     name = 'Sabai',
+  #     icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+  #     )
+  #     embed.set_footer(
+  #       text="This menu is subject to change  •  Today at " + str((now.hour)%12) + ":" + str(now.minute) + " " + pm
+  #     )
+  #     await message.channel.send(embed=embed)
+  #   else:
+  #     embed=discord.Embed(
+  #       description = "Dining hall was not found! Please try again",
+  #       color=0xF59F16,
+  #     )
+  #     await message.channel.send(embed=embed)
 
 
 #REC
