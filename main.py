@@ -155,13 +155,20 @@ async def on_message(message):
         title="Mizzou Rec Facility Hours",
         url="https://mizzourec.com/facilities/information/hours/",
         description="""
-• **Sunday**: {}
-• **Monday**: {}
-• **Tuesday**: {}
-• **Wednesday**: {}
-• **Thursday**: {}
-• **Friday**: {}
-• **Saturday**: {}""".format(rechours["SUNDAY"], rechours["MONDAY"], rechours["TUESDAY"], rechours["WEDNESDAY"], rechours["THURSDAY"], rechours["FRIDAY"], rechours["SATURDAY"]),
+**Sunday:** {}
+
+**Monday:** {}
+
+**Tuesday:** {}
+
+**Wednesday:** {}
+
+**Thursday:** {}
+
+**Friday:** {}
+
+**Saturday:** {}
+""".format(rechours["SUNDAY"], rechours["MONDAY"], rechours["TUESDAY"], rechours["WEDNESDAY"], rechours["THURSDAY"], rechours["FRIDAY"], rechours["SATURDAY"]),
         color=0xF59F16,
     )
     embed.set_author(
