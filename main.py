@@ -7,6 +7,7 @@ import os
 from dotenv import load_dotenv, find_dotenv
 import directory.directorysearch as directorysearch
 import directory.Person as Person
+import rec.rec as rec
 
 load_dotenv(find_dotenv())
 
@@ -146,6 +147,32 @@ async def on_message(message):
   #     )
   #     await message.channel.send(embed=embed)
 
+
+#REC
+  if (msg.startswith('/rec')):
+    rechours = rec.getDaysDictionary(rec.getWeekDictionary())
+    embed=discord.Embed(
+        title="Mizzou Rec Facility Hours",
+        url="https://mizzourec.com/facilities/information/hours/",
+        description="""
+• **Sunday**: {}
+• **Monday**: {}
+• **Tuesday**: {}
+• **Wednesday**: {}
+• **Thursday**: {}
+• **Friday**: {}
+• **Saturday**: {}""".format(rechours["SUNDAY"], rechours["MONDAY"], rechours["TUESDAY"], rechours["WEDNESDAY"], rechours["THURSDAY"], rechours["FRIDAY"], rechours["SATURDAY"]),
+        color=0xF59F16,
+    )
+    embed.set_author(
+      name = "Mizzou Rec",
+      url="https://mizzourec.com/",
+      icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+    )
+    embed.set_footer(
+      text="Showing schedule for {}".format(rec.getWeek())
+    )
+    await message.channel.send(embed=embed)
 
 #COVID
   if (msg.startswith('/covid')):
