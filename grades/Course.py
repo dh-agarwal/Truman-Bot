@@ -34,6 +34,9 @@ class Course:
         res += ("Average: " + str(self.average) + "\n")
         return res
 
+    def __hash__(self):
+        return hash(str(self))
+        
 def getTerm(course):
     if ("SP" in course.term):
         return "Spring {}".format(course.term[-4:])

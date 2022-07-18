@@ -1,4 +1,6 @@
 import discord
+from discord.utils import get
+import asyncio
 #import dining.sabai as sabai
 import grades.Course as Course
 import grades.gradecalculations as gradecalculations
@@ -15,6 +17,7 @@ client = discord.Client()
 
 @client.event
 async def on_message(message):
+  global msg
   msg = message.content
   auth = message.author.name
 
@@ -83,15 +86,18 @@ async def on_message(message):
 
 #GRADES
   if msg.startswith('/grades'):
+    global i
+    i = 0
     msg = msg.strip()
     info = msg.split()
     info.pop(0)
-    course1 = gradecalculations.getCourse(info)
-    if (course1.title != "Not Found"):
-      gradecalculations.generateCourseImage(course1)
+    global courses
+    courses = gradecalculations.getCourse(info)
+    if (courses != []):
+      gradecalculations.generateCourseImage(courses[0])
       embed = discord.Embed(
         color=0xF59F16,
-        title = "**{} {}**".format(course1.dept, course1.number),
+        title = "**{} {}**".format(courses[0].dept, courses[0].number),
       )
       embed.set_author(
       name = 'MU Grades',
@@ -100,12 +106,15 @@ async def on_message(message):
       embed.set_footer(
         text="Data last updated on 7/10/2022"
       )
-      embed.add_field(name="**Instructor**", value="{}".format(course1.instructor.title()), inline=True)
-      embed.add_field(name="**Section**", value="{}".format(course1.section), inline=True)
-      embed.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(course1))), inline=True)
-      file = discord.File("grades/graph.png", filename="{}_{}.png".format(course1.dept, course1.number))
-      embed.set_image(url="attachment://{}_{}.png".format(course1.dept, course1.number))
-      await message.channel.send(file=file, embed=embed)
+      embed.add_field(name="**Instructor**", value="{}".format(courses[0].instructor.title()), inline=True)
+      embed.add_field(name="**Section**", value="{}".format(courses[0].section), inline=True)
+      embed.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(courses[0]))), inline=True)
+      file = discord.File("grades/graph.png", filename="{}_{}.png".format(courses[0].dept, courses[0].number))
+      embed.set_image(url="attachment://{}_{}.png".format(courses[0].dept, courses[0].number))
+      a = await message.channel.send(file=file, embed=embed)
+      await a.add_reaction("⬅️")
+      await a.add_reaction('➡️')
+
     else:
       embed=discord.Embed(
         description = "Course was not found! Please try again",
@@ -117,6 +126,8 @@ async def on_message(message):
       )
 
       await message.channel.send(embed=embed)
+
+    #await d.edit(embed = c)
 
   # if msg.startswith('/dining'):
   #   info = msg.split()
@@ -272,6 +283,41 @@ async def on_message(message):
       )
       await message.channel.send(embed=embed)
 
+i = 0
+
+@client.event
+async def on_reaction_add(reaction, user):
+  global i
+  if user != client.user:
+      if str(reaction.emoji) == "➡️":
+          await reaction.remove(user)
+          if i < 9:
+            i += 1
+            gradecalculations.generateCourseImage(courses[i])
+            newResult = discord.Embed(
+              color=0xF59F16,
+              title = "**{} {}**".format(courses[i].dept, courses[i].number),
+            )
+            newResult.set_author(
+            name = 'MU Grades',
+            icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+            )
+            newResult.set_footer(
+              text="Data last updated on 7/10/2022"
+            )
+            newResult.add_field(name="**Instructor**", value="{}".format(courses[i].instructor.title()), inline=True)
+            newResult.add_field(name="**Section**", value="{}".format(courses[i].section), inline=True)
+            newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(courses[i]))), inline=True)
+            file = discord.File("grades/graph.png", filename="{}_{}.png".format(courses[i].dept, courses[i].number))
+            newResult.set_image(url="attachment://{}_{}.png".format(courses[i].dept, courses[i].number))
+            await reaction.message.edit(embed=newResult)
+      if str(reaction.emoji) == "⬅️":
+          await reaction.remove(user)
+          if 0 < i:
+            i -= 1
+      print(i)
+          # newSearchResult = discord.Embed(title="changed")
+          # await reaction.message.edit(embed=newSearchResult)
 
 #TOKEN
 client.run(os.getenv('TOKEN'))  

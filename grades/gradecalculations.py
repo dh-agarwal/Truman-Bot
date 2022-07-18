@@ -16,6 +16,7 @@ def getCourse(searchCriteriaUnsplit):
     currentMatches = 0
     maxMatches = 0
     matched = False
+    matcheddict = {}
     for course in courseList:
         for criteria in range(len(searchCriteria)):
             searchCriteria[criteria] = intendedwords.getIntendedWord(searchCriteria[criteria])
@@ -45,13 +46,16 @@ def getCourse(searchCriteriaUnsplit):
             if matched == False and searchCriteria[criteria] in (re.split(',| ', course.instructor.lower())):
                 currentMatches += (len(searchCriteria)-(criteria))
                 matched = True
-        if (currentMatches > maxMatches):
-            maxMatches = currentMatches
-            maxMatchedCourse = course
+        if (currentMatches > 0):
+            matcheddict[course] = currentMatches
         currentMatches = 0
-    if (maxMatches == 0):
-        return Course.Course("", "Not Found", "", "", "", "", "", 0, 0, 0, 0, 0, 0.0)
-    return maxMatchedCourse
+    sortedmatcheddict = dict(sorted(matcheddict.items(), key=lambda item: item[1], reverse = True))
+    sortedmatchedlist = list(sortedmatcheddict.items())
+    sortedmatchedlist = sortedmatchedlist[:9]
+    sortedmatchedlistcourses = []
+    for course2 in sortedmatchedlist:
+        sortedmatchedlistcourses.append(course2[0])
+    return sortedmatchedlistcourses
 
 def generateCourseImage(course):
     gradesXAxis = ("A", "B", "C", "D", "F")
