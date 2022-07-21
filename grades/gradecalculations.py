@@ -51,7 +51,7 @@ def getCourse(searchCriteriaUnsplit):
         currentMatches = 0
     sortedmatcheddict = dict(sorted(matcheddict.items(), key=lambda item: item[1], reverse = True))
     sortedmatchedlist = list(sortedmatcheddict.items())
-    sortedmatchedlist = sortedmatchedlist[:9]
+    sortedmatchedlist = sortedmatchedlist[:100]
     sortedmatchedlistcourses = []
     for course2 in sortedmatchedlist:
         sortedmatchedlistcourses.append(course2[0])
