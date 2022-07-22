@@ -10,6 +10,7 @@ from dotenv import load_dotenv, find_dotenv
 import directory.directorysearch as directorysearch
 import directory.Person as Person
 import rec.rec as rec
+import math
 
 load_dotenv(find_dotenv())
 
@@ -108,6 +109,7 @@ async def on_message(message):
       icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
       )
       global similarcourses
+      global similarcoursesstrings
       similarcourses = []
       similarcoursesstrings = []
       for i in range(len(courses)):
@@ -115,15 +117,14 @@ async def on_message(message):
           similarcoursesstrings.append("{} {} ({})".format(courses[i].dept, courses[i].number, courses[i].title.title()))
           similarcourses.append(courses[i])
       similarcoursesstrings.remove("{} {} ({})".format(courses[0].dept, courses[0].number, courses[0].title.title()))
-      similarcoursesstrings = similarcoursesstrings[:3]
-      txt = "Similar search results{}:\t\t\t\t\t*Data last updated on 7/10/2022".format("" if len(similarcoursesstrings) == 3 else " (" + str(len(similarcoursesstrings)) + ")")
+      txt = "Similar search results ({}):\t\t\t\t\t*Data last updated on 7/10/2022".format((len(similarcoursesstrings)))
       i = 0
       emojidict = {
         1: "1️⃣",
         2: "2️⃣",
         3: "3️⃣"
       }
-      for similarcourse in similarcoursesstrings:
+      for similarcourse in similarcoursesstrings[:3]:
         i += 1
         txt += "\n{} {}".format(emojidict[i],similarcourse)
       embed.set_footer(
@@ -134,9 +135,12 @@ async def on_message(message):
       embed.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(courses[0]))), inline=True)
       file = discord.File("grades/graph.png", filename="{}_{}.png".format(courses[0].dept, courses[0].number))
       embed.set_image(url="attachment://{}_{}.png".format(courses[0].dept, courses[0].number))
-      a = await message.channel.send(file=file, embed=embed)
-      for x in range(len(similarcoursesstrings)):
-        await a.add_reaction(emojidict[x+1])
+      global coursemsg
+      coursemsg = await message.channel.send(file=file, embed=embed)
+      for x in range(len(similarcoursesstrings[:3])):
+        await coursemsg.add_reaction(emojidict[x+1])
+      if (len(similarcoursesstrings) > 3):
+        await coursemsg.add_reaction("↕️")
 
     else:
       embed=discord.Embed(
@@ -307,11 +311,133 @@ async def on_message(message):
       await message.channel.send(embed=embed)
 
 #i = 0
+page = 0
 
 @client.event
 async def on_reaction_add(reaction, user):
   if user != client.user:
+      global page
       global maincourse
+      global similarcourses
+      global similarcoursesstrings
+      if str(reaction.emoji) == "↕️":
+          newResult = discord.Embed(
+            color=0xF59F16,
+            title = "**{} {}**".format(courses[0].dept, courses[0].number),
+          )
+          newResult.set_author(
+          name = 'MU Grades',
+          icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+          )
+
+          txt = "Similar search results ({}):\t\t\t\t\t\t\t\t\t\t    Page 1/{}".format((len(similarcoursesstrings)), str(math.ceil(len(similarcoursesstrings)/10)))
+          i = 0
+          emojidict = {
+            1: "1️⃣",
+            2: "2️⃣",
+            3: "3️⃣"
+          }
+          for similarcourse in similarcoursesstrings[:3]:
+            i += 1
+            txt += "\n{} {}".format(emojidict[i],similarcourse)
+          for similarcourse in similarcoursesstrings[3:10]:
+            i += 1
+            txt += "\n {}) {}".format(i,similarcourse)
+          newResult.set_footer(
+            text=txt
+          )
+          newResult.add_field(name="**Instructor**", value="{}".format(courses[0].instructor.title()), inline=True)
+          newResult.add_field(name="**Section**", value="{}".format(courses[0].section), inline=True)
+          newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(courses[0]))), inline=True)
+          newResult.set_image(url="attachment://{}_{}.png".format(courses[0].dept, courses[0].number))
+          await reaction.message.edit(embed=newResult)
+          if len(similarcoursesstrings) > 10:
+            await coursemsg.add_reaction("⬅️")
+            await coursemsg.add_reaction('➡️')
+      if str(reaction.emoji) == "➡️":
+        await reaction.remove(user)
+        if page < len(similarcoursesstrings)/10 - 1:
+          page += 1
+          newResult = discord.Embed(
+            color=0xF59F16,
+            title = "**{} {}**".format(courses[0].dept, courses[0].number),
+          )
+          newResult.set_author(
+          name = 'MU Grades',
+          icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+          )
+          txt = "Similar search results ({}):\t\t\t\t\t\t\t\t\t\t    Page {}/{}".format((len(similarcoursesstrings)),page+1,str(math.ceil(len(similarcoursesstrings)/10)))
+          emojidict = {
+            1: "1️⃣",
+            2: "2️⃣",
+            3: "3️⃣"
+          }
+          if page == 0:
+            i = 0
+            for similarcourse in similarcoursesstrings[:3]:
+              i += 1
+              txt += "\n{} {}".format(emojidict[i],similarcourse)
+            for similarcourse in similarcoursesstrings[3:10]:
+              i += 1
+              txt += "\n {}) {}".format(i,similarcourse)
+          else:
+            i = page*10
+            for similarcourse in similarcoursesstrings[page*10:page*10+10]:
+              i += 1
+              txt += "\n {}) {}".format(i,similarcourse)
+          newResult.set_footer(
+            text=txt
+          )
+          newResult.add_field(name="**Instructor**", value="{}".format(courses[0].instructor.title()), inline=True)
+          newResult.add_field(name="**Section**", value="{}".format(courses[0].section), inline=True)
+          newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(courses[0]))), inline=True)
+          newResult.set_image(url="attachment://{}_{}.png".format(courses[0].dept, courses[0].number))
+          await reaction.message.edit(embed=newResult)
+          if len(similarcoursesstrings) > 20:
+            await coursemsg.add_reaction("⬅️")
+            await coursemsg.add_reaction('➡️')
+      if str(reaction.emoji) == "⬅️":
+        await reaction.remove(user)
+        if page > 0:
+          page -= 1
+          newResult = discord.Embed(
+            color=0xF59F16,
+            title = "**{} {}**".format(courses[0].dept, courses[0].number),
+          )
+          newResult.set_author(
+          name = 'MU Grades',
+          icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+          )
+          txt = "Similar search results ({}):\t\t\t\t\t\t\t\t\t\t    Page {}/{}".format((len(similarcoursesstrings)),page+1,str(math.ceil(len(similarcoursesstrings)/10)))
+          emojidict = {
+            1: "1️⃣",
+            2: "2️⃣",
+            3: "3️⃣"
+          }
+          if page == 0:
+            i = 0
+            for similarcourse in similarcoursesstrings[:3]:
+              i += 1
+              txt += "\n{} {}".format(emojidict[i],similarcourse)
+            for similarcourse in similarcoursesstrings[3:10]:
+              i += 1
+              txt += "\n {}) {}".format(i,similarcourse)
+          else:
+            i = page*10
+            for similarcourse in similarcoursesstrings[page*10:page*10+10]:
+              i += 1
+              txt += "\n {}) {}".format(i,similarcourse)
+          newResult.set_footer(
+            text=txt
+          )
+          newResult.add_field(name="**Instructor**", value="{}".format(courses[0].instructor.title()), inline=True)
+          newResult.add_field(name="**Section**", value="{}".format(courses[0].section), inline=True)
+          newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(courses[0]))), inline=True)
+          newResult.set_image(url="attachment://{}_{}.png".format(courses[0].dept, courses[0].number))
+          await reaction.message.edit(embed=newResult)
+          if len(similarcoursesstrings) > 20:
+            await coursemsg.add_reaction("⬅️")
+            await coursemsg.add_reaction('➡️')
       if str(reaction.emoji) == "1️⃣":
           gradecalculations.generateCourseImage(similarcourses[1])
           newResult = discord.Embed(
@@ -342,7 +468,7 @@ async def on_reaction_add(reaction, user):
           icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
           )
           newResult.set_footer(
-            text="Queried by: {}\t\t\t\t*Data last updated on 7/10/2022".format(maincourse)
+            text="Queried by: {}\t\t\t\t*Data last updated on 7/10/2022\n".format(maincourse)
           )
           newResult.add_field(name="**Instructor**", value="{}".format(similarcourses[2].instructor.title()), inline=True)
           newResult.add_field(name="**Section**", value="{}".format(similarcourses[2].section), inline=True)
@@ -369,38 +495,6 @@ async def on_reaction_add(reaction, user):
           file = discord.File("grades/graph.png", filename="{}_{}.png".format(similarcourses[3].dept, similarcourses[3].number))
           newResult.set_image(url="attachment://{}_{}.png".format(similarcourses[3].dept, similarcourses[3].number))
           await chan.send(file=file, embed=newResult)
-      
-  # global i
-  # if user != client.user:
-  #     if str(reaction.emoji) == "➡️":
-  #         await reaction.remove(user)
-  #         if i < 9:
-  #           i += 1
-  #           gradecalculations.generateCourseImage(courses[i])
-  #           newResult = discord.Embed(
-  #             color=0xF59F16,
-  #             title = "**{} {}**".format(courses[i].dept, courses[i].number),
-  #           )
-  #           newResult.set_author(
-  #           name = 'MU Grades',
-  #           icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
-  #           )
-  #           newResult.set_footer(
-  #             text="Data last updated on 7/10/2022"
-  #           )
-  #           newResult.add_field(name="**Instructor**", value="{}".format(courses[i].instructor.title()), inline=True)
-  #           newResult.add_field(name="**Section**", value="{}".format(courses[i].section), inline=True)
-  #           newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(courses[i]))), inline=True)
-  #           file = discord.File("grades/graph.png", filename="{}_{}.png".format(courses[i].dept, courses[i].number))
-  #           newResult.set_image(url="attachment://{}_{}.png".format(courses[i].dept, courses[i].number))
-  #           await reaction.message.edit(embed=newResult)
-  #     if str(reaction.emoji) == "⬅️":
-  #         await reaction.remove(user)
-  #         if 0 < i:
-  #           i -= 1
-  #     print(i)
-  #         # newSearchResult = discord.Embed(title="changed")
-  #         # await reaction.message.edit(embed=newSearchResult)
 
 #TOKEN
 client.run(os.getenv('TOKEN'))  
