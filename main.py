@@ -11,6 +11,8 @@ import directory.directorysearch as directorysearch
 import directory.Person as Person
 import rec.rec as rec
 import math
+import time
+import re
 
 load_dotenv(find_dotenv())
 
@@ -133,8 +135,9 @@ async def on_message(message):
       embed.add_field(name="**Instructor**", value="{}".format(courses[0].instructor.title()), inline=True)
       embed.add_field(name="**Section**", value="{}".format(courses[0].section), inline=True)
       embed.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(courses[0]))), inline=True)
-      file = discord.File("grades/graph.png", filename="{}_{}.png".format(courses[0].dept, courses[0].number))
-      embed.set_image(url="attachment://{}_{}.png".format(courses[0].dept, courses[0].number))
+      coursename = re.sub(r'[^a-zA-Z]', '', courses[0].dept)
+      file = discord.File("grades/graph.png", filename="{}{}.png".format(coursename, courses[0].number))
+      embed.set_image(url="attachment://{}{}.png".format(coursename, courses[0].number))
       global coursemsg
       coursemsg = await message.channel.send(file=file, embed=embed)
       for x in range(len(similarcoursesstrings[:3])):
@@ -419,8 +422,9 @@ async def on_reaction_add(reaction, user):
           newResult.add_field(name="**Instructor**", value="{}".format(similarcourses[1].instructor.title()), inline=True)
           newResult.add_field(name="**Section**", value="{}".format(similarcourses[1].section), inline=True)
           newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(similarcourses[1]))), inline=True)
-          file = discord.File("grades/graph.png", filename="{}_{}.png".format(similarcourses[1].dept, similarcourses[1].number))
-          newResult.set_image(url="attachment://{}_{}.png".format(similarcourses[1].dept, similarcourses[1].number))
+          coursename = re.sub(r'[^a-zA-Z]', '', similarcourses[1].dept)
+          file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[1].number))
+          newResult.set_image(url="attachment://{}_{}.png".format(coursename, similarcourses[1].number))
           await chan.send(file=file, embed=newResult)
       if str(reaction.emoji) == "2️⃣":
           gradecalculations.generateCourseImage(similarcourses[2])
@@ -438,8 +442,9 @@ async def on_reaction_add(reaction, user):
           newResult.add_field(name="**Instructor**", value="{}".format(similarcourses[2].instructor.title()), inline=True)
           newResult.add_field(name="**Section**", value="{}".format(similarcourses[2].section), inline=True)
           newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(similarcourses[2]))), inline=True)
-          file = discord.File("grades/graph.png", filename="{}_{}.png".format(similarcourses[2].dept, similarcourses[2].number))
-          newResult.set_image(url="attachment://{}_{}.png".format(similarcourses[2].dept, similarcourses[2].number))
+          coursename = re.sub(r'[^a-zA-Z]', '', similarcourses[2].dept)
+          file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[2].number))
+          newResult.set_image(url="attachment://{}_{}.png".format(coursename, similarcourses[2].number))
           await chan.send(file=file, embed=newResult)
       if str(reaction.emoji) == "3️⃣":
           gradecalculations.generateCourseImage(similarcourses[3])
@@ -457,8 +462,9 @@ async def on_reaction_add(reaction, user):
           newResult.add_field(name="**Instructor**", value="{}".format(similarcourses[3].instructor.title()), inline=True)
           newResult.add_field(name="**Section**", value="{}".format(similarcourses[3].section), inline=True)
           newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(similarcourses[3]))), inline=True)
-          file = discord.File("grades/graph.png", filename="{}_{}.png".format(similarcourses[3].dept, similarcourses[3].number))
-          newResult.set_image(url="attachment://{}_{}.png".format(similarcourses[3].dept, similarcourses[3].number))
+          coursename = re.sub(r'[^a-zA-Z]', '', similarcourses[3].dept)
+          file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[3].number))
+          newResult.set_image(url="attachment://{}_{}.png".format(coursename, similarcourses[3].number))
           await chan.send(file=file, embed=newResult)
 
 #TOKEN
