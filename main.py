@@ -140,7 +140,7 @@ async def on_message(message):
       for x in range(len(similarcoursesstrings[:3])):
         await coursemsg.add_reaction(emojidict[x+1])
       if (len(similarcoursesstrings) > 3):
-        await coursemsg.add_reaction("↕️")
+        await coursemsg.add_reaction("⏬")
 
     else:
       embed=discord.Embed(
@@ -285,7 +285,7 @@ async def on_reaction_add(reaction, user):
       global maincourse
       global similarcourses
       global similarcoursesstrings
-      if str(reaction.emoji) == "↕️":
+      if str(reaction.emoji) == "⏬":
           newResult = discord.Embed(
             color=0xF59F16,
             title = "**{} {}**".format(courses[0].dept, courses[0].number),

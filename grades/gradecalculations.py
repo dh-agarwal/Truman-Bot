@@ -14,20 +14,29 @@ def getCourse(searchCriteriaUnsplit):
             if criteria2 != '':
                 searchCriteria.append(criteria2)
     currentMatches = 0
-    maxMatches = 0
     matched = False
     matcheddict = {}
+    honors = False
+    writing = False
+    if ('h' in searchCriteria or 'H' in searchCriteria or 'honors' in searchCriteria or 'HONORS' in searchCriteria):
+        honors = True
+    if ('w' in searchCriteria or 'W' in searchCriteria or 'writing' in searchCriteria or 'WRITING' in searchCriteria):
+        writing = True
     for course in courseList:
+        if honors and 'h' in course.number.lower():
+            currentMatches += 1
+        if writing and 'w' in course.number.lower():
+            currentMatches += 1
         for criteria in range(len(searchCriteria)):
             searchCriteria[criteria] = intendedwords.getIntendedWord(searchCriteria[criteria])
             matched = False
-            if matched == False and searchCriteria[criteria] in course.dept.lower():
+            if len(searchCriteria[criteria]) > 1 and matched == False and searchCriteria[criteria] in course.dept.lower():
                 currentMatches += (len(searchCriteria)-(criteria))
                 matched = True
             if matched == False and len(searchCriteria[criteria]) > 2 and searchCriteria[criteria] in (course.title.lower().split()):
                 currentMatches += (len(searchCriteria)-(criteria))
                 matched = True
-            if matched == False and searchCriteria[criteria] == course.number.lower():
+            if matched == False and searchCriteria[criteria] == course.number[:4].lower():
                 currentMatches += (len(searchCriteria)-(criteria))
                 matched = True
             if matched == False and searchCriteria[criteria] == course.section.lower():
@@ -51,7 +60,7 @@ def getCourse(searchCriteriaUnsplit):
         currentMatches = 0
     sortedmatcheddict = dict(sorted(matcheddict.items(), key=lambda item: item[1], reverse = True))
     sortedmatchedlist = list(sortedmatcheddict.items())
-    sortedmatchedlist = sortedmatchedlist[:100]
+    sortedmatchedlist = sortedmatchedlist[:91]
     sortedmatchedlistcourses = []
     for course2 in sortedmatchedlist:
         sortedmatchedlistcourses.append(course2[0])
