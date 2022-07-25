@@ -57,12 +57,12 @@ async def courses(interaction: discord.Interaction, info: str = ""):
 
     if (courses != []):
       global maincourse
-      maincourse = "{} {}".format(courses[0].dept, courses[0].number)
+      maincourse = f"{courses[0].dept} {courses[0].number}"
 
       gradecalculations.generateCourseImage(courses[0])
       embed = discord.Embed(
         color=0xF59F16,
-        title = "**{} {}**".format(courses[0].dept, courses[0].number),
+        title = f"**{courses[0].dept} {courses[0].number}**"
       )
 
       embed.set_author(
@@ -75,11 +75,11 @@ async def courses(interaction: discord.Interaction, info: str = ""):
       similarcourses = []
       similarcoursesstrings = []
       for i in range(len(courses)):
-        if ("{} {} ({})".format(courses[i].dept, courses[i].number, courses[i].title.title())) not in similarcoursesstrings:
-          similarcoursesstrings.append("{} {} ({})".format(courses[i].dept, courses[i].number, courses[i].title.title()))
+        if (f"{courses[i].dept} {courses[i].number} ({courses[i].title.title()})") not in similarcoursesstrings:
+          similarcoursesstrings.append(f"{courses[i].dept} {courses[i].number} ({courses[i].title.title()})")
           similarcourses.append(courses[i])
-      similarcoursesstrings.remove("{} {} ({})".format(courses[0].dept, courses[0].number, courses[0].title.title()))
-      txt = "Similar search results ({}):\t\t\t\t\t*Data last updated on 7/10/2022".format((len(similarcoursesstrings)))
+      similarcoursesstrings.remove(f"{courses[0].dept} {courses[0].number} ({courses[0].title.title()})")
+      txt = f"Similar search results ({len(similarcoursesstrings)}):\t\t\t\t\t*Data last updated on 7/10/2022"
 
       i = 0
       emojidict = {
@@ -90,16 +90,16 @@ async def courses(interaction: discord.Interaction, info: str = ""):
 
       for similarcourse in similarcoursesstrings[:3]:
         i += 1
-        txt += "\n{} {}".format(emojidict[i],similarcourse)
+        txt += f"\n{emojidict[i]} {similarcourse}"
 
       embed.set_footer(text=txt)
-      embed.add_field(name="**Instructor**", value="{}".format(courses[0].instructor.title()), inline=True)
-      embed.add_field(name="**Section**", value="{}".format(courses[0].section), inline=True)
-      embed.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(courses[0]))), inline=True)
+      embed.add_field(name="**Instructor**", value=f"{courses[0].instructor.title()}", inline=True)
+      embed.add_field(name="**Section**", value=f"{courses[0].section}", inline=True)
+      embed.add_field(name="**Total Students**", value=f"{str(Course.getTotalStudents(courses[0]))}", inline=True)
 
       coursename = re.sub(r'[^a-zA-Z]', '', courses[0].dept)
-      file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, courses[0].number))
-      embed.set_image(url="attachment://{}_{}.png".format(coursename, courses[0].number))
+      file = discord.File("grades/graph.png", filename=f"{coursename}_{courses[0].number}.png")
+      embed.set_image(url=f"attachment://{coursename}_{courses[0].number}.png")
 
       global coursemsg
 
@@ -164,7 +164,7 @@ async def personsearch(interaction: discord.Interaction, firstname: str = "", la
             )
         else:
             embed=discord.Embed(
-            title="{}".format(p1.name),
+            title=f"{p1.name}",
             color=0xF59F16,
             )
 
@@ -176,21 +176,21 @@ async def personsearch(interaction: discord.Interaction, firstname: str = "", la
 
             embed.set_thumbnail(url="https://www.bangory.org/wp-content/uploads/2016/05/person-icon-233x300.png")
             if p1.title != "":
-                embed.add_field(name="Title", value="{}".format(p1.title), inline=True)
+                embed.add_field(name="Title", value=f"{p1.title}", inline=True)
             if p1.dept != "":
-                embed.add_field(name="Department", value="{}".format(p1.dept), inline=True)
+                embed.add_field(name="Department", value=f"{p1.dept}", inline=True)
             if p1.email != "":
-                embed.add_field(name="Email", value="{}".format(p1.email), inline=True)
+                embed.add_field(name="Email", value=f"{p1.email}", inline=True)
             if p1.phone != "":
-                embed.add_field(name="Phone", value="{}".format(p1.phone), inline=True)
+                embed.add_field(name="Phone", value=f"{p1.phone}", inline=True)
             if p1.address != "":
-                embed.add_field(name="Address", value="{}".format(p1.address), inline=True)
+                embed.add_field(name="Address", value=f"{p1.address}", inline=True)
             if p1.city != "" and p1.state == "":
-                embed.add_field(name="City", value="{}, {}".format(p1.city), inline=True)
+                embed.add_field(name="City", value=f"{p1.city}", inline=True)
             if p1.city == "" and p1.state != "":
-                embed.add_field(name="State", value="{}, {}".format(p1.state), inline=True)
+                embed.add_field(name="State", value=f"{p1.state}", inline=True)
             if p1.city != "" and p1.state != "":
-                embed.add_field(name="City/State", value="{}, {}".format(p1.city, p1.state), inline=True)
+                embed.add_field(name="City/State", value=f"{p1.city}, {p1.state}", inline=True)
         await interaction.followup.send(embed=embed)
 
 
@@ -241,7 +241,7 @@ async def rechours(interaction: discord.Interaction):
     )
 
     embed.set_footer(
-      text="Showing schedule for {}".format(rec.getWeek())
+      text=f"Showing schedule for {rec.getWeek()}"
     )
 
     await interaction.followup.send(embed=embed)

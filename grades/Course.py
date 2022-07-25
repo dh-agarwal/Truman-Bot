@@ -39,13 +39,13 @@ class Course:
         
 def getTerm(course):
     if ("SP" in course.term):
-        return "Spring {}".format(course.term[-4:])
+        return f"Spring {course.term[-4:]}"
     if ("FS" in course.term):
-        return "Fall {}".format(course.term[-4:])
+        return f"Fall {course.term[-4:]}"
     if ("WS" in course.term):
-        return "Winter {}".format(course.term[-4:])
+        return f"Winter {course.term[-4:]}"
     if ("SS" in course.term):
-        return "Summer {}".format(course.term[-4:])
+        return f"Summer {course.term[-4:]}"
 
 def getTotalStudents(course):
     return course.arange + course.brange + course.crange + course.drange + course.frange

@@ -46,7 +46,7 @@ def getPersonWithSoup(soup):
 
 
 def getPerson(first, last):
-    URL = "https://missouri.edu/directory/people-results?firstName={}&lastname={}&department=&phoneno=&email=&Search=Find+Person".format(first, last)
+    URL = f"https://missouri.edu/directory/people-results?firstName={first}&lastname={last}&department=&phoneno=&email=&Search=Find+Person"
     page = requests.get(URL)
     soup = BeautifulSoup(page.content, "html.parser")
     if(soup.find("p", {"class": "meta-result"}).text == "Your search returned too many results. Please provide more details."):
