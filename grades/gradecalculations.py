@@ -88,7 +88,7 @@ def generateCourseImage(course):
        plt.yticks(range(1,max(gradesYAxis) + 2))
     elif (max(gradesYAxis) < 24):
        plt.yticks(range(0,max(gradesYAxis) + 6, 5))
-    plt.title('{} - {}'.format((course.title).title(), Course.getTerm(course)),fontweight = 'bold', fontsize = 34, pad=30.0)
+    plt.title(f"{(course.title).title()} - {Course.getTerm(course)}", fontweight = 'bold', fontsize = 34, pad=30.0)
     plt.grid(zorder = 0)
     plt.subplots_adjust( bottom=.1)
     ax.spines['top'].set_visible(False)
