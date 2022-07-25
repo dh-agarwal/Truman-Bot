@@ -23,7 +23,18 @@ import directory.Person as Person
 import grades.Course as Course
 import grades.gradecalculations as gradecalculations
 from discord.app_commands import Choice
+from discord.ext import commands
 
+page = 1
+
+class Menu(discord.ui.View):
+  def __init__(self):
+    super().__init__()
+    self.value = None
+
+  @discord.ui.button(label="Send Message", style=discord.ButtonStyle.grey)
+  async def menu1(self, button:discord.ui.Button, interaction:discord.Interaction):
+    print(page)
 
 class client(discord.Client):
   def __init__(self):
@@ -39,6 +50,12 @@ class client(discord.Client):
 
 aclient = client()
 tree = app_commands.CommandTree(aclient)
+
+@tree.command(name = "menu", description='menu')
+async def menu(interaction: discord.Interaction):
+  await interaction.response.defer()
+  view = Menu()
+  await interaction.followup.send(view=view)
 
 
 #GRADES
@@ -101,15 +118,14 @@ async def courses(interaction: discord.Interaction, info: str = ""):
       file = discord.File("grades/graph.png", filename=f"{coursename}_{courses[0].number}.png")
       embed.set_image(url=f"attachment://{coursename}_{courses[0].number}.png")
 
-      global coursemsg
+      global msg
 
-      await interaction.followup.send(file=file, embed=embed)
-      #coursemsg = await message.channel.send(file=file, embed=embed)
+      msg = await interaction.followup.send(file=file, embed=embed)
 
-    #   for x in range(len(similarcoursesstrings[:3])):
-    #     await coursemsg.add_reaction(emojidict[x+1])
-    #   if (len(similarcoursesstrings) > 3):
-    #     await coursemsg.add_reaction("⏬")
+      for x in range(len(similarcoursesstrings[:3])):
+        await msg.add_reaction(emojidict[x+1])
+      if (len(similarcoursesstrings) > 3):
+        await msg.add_reaction("⏬")
 
     else:
       embed=discord.Embed(
