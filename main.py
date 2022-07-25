@@ -11,6 +11,8 @@ import directory.directorysearch as directorysearch
 import directory.Person as Person
 import rec.rec as rec
 import math
+import time
+import re
 
 load_dotenv(find_dotenv())
 
@@ -30,6 +32,7 @@ async def on_message(message):
 #DIRECTORY
   if msg.startswith('/directory'):
     info = msg.split()
+
     if (len(info) == 2):
       p1 = directorysearch.getPerson(info[1], "")
     elif (len(info) > 2):
@@ -42,6 +45,7 @@ async def on_message(message):
       description = "Student was not found! Please try again.",
       color=0xF59F16,
       )
+
       embed.set_author(
       url="https://missouri.edu/directory",
       name = 'MU Directory',
@@ -52,6 +56,7 @@ async def on_message(message):
       description = "Too many results were returned! Please be more specific.",
       color=0xF59F16,
       )
+
       embed.set_author(
       url="https://missouri.edu/directory",
       name = 'MU Directory',
@@ -62,11 +67,13 @@ async def on_message(message):
       title="{}".format(p1.name),
       color=0xF59F16,
       )
+
       embed.set_author(
       url="https://missouri.edu/directory",
       name = 'MU Directory',
       icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
       )
+
       embed.set_thumbnail(url="https://www.bangory.org/wp-content/uploads/2016/05/person-icon-233x300.png")
       if p1.title != "":
         embed.add_field(name="Title", value="{}".format(p1.title), inline=True)
@@ -94,20 +101,25 @@ async def on_message(message):
     msg = msg.strip()
     info = msg.split()
     info.pop(0)
+
     global courses
     courses = gradecalculations.getCourse(info)
+
     if (courses != []):
       global maincourse
       maincourse = "{} {}".format(courses[0].dept, courses[0].number)
+
       gradecalculations.generateCourseImage(courses[0])
       embed = discord.Embed(
         color=0xF59F16,
         title = "**{} {}**".format(courses[0].dept, courses[0].number),
       )
+
       embed.set_author(
       name = 'MU Grades',
       icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
       )
+
       global similarcourses
       global similarcoursesstrings
       similarcourses = []
@@ -118,35 +130,41 @@ async def on_message(message):
           similarcourses.append(courses[i])
       similarcoursesstrings.remove("{} {} ({})".format(courses[0].dept, courses[0].number, courses[0].title.title()))
       txt = "Similar search results ({}):\t\t\t\t\t*Data last updated on 7/10/2022".format((len(similarcoursesstrings)))
+
       i = 0
       emojidict = {
         1: "1️⃣",
         2: "2️⃣",
         3: "3️⃣"
       }
+
       for similarcourse in similarcoursesstrings[:3]:
         i += 1
         txt += "\n{} {}".format(emojidict[i],similarcourse)
-      embed.set_footer(
-        text=txt
-      )
+
+      embed.set_footer(text=txt)
       embed.add_field(name="**Instructor**", value="{}".format(courses[0].instructor.title()), inline=True)
       embed.add_field(name="**Section**", value="{}".format(courses[0].section), inline=True)
       embed.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(courses[0]))), inline=True)
-      file = discord.File("grades/graph.png", filename="{}_{}.png".format(courses[0].dept, courses[0].number))
-      embed.set_image(url="attachment://{}_{}.png".format(courses[0].dept, courses[0].number))
+
+      coursename = re.sub(r'[^a-zA-Z]', '', courses[0].dept)
+      file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, courses[0].number))
+      embed.set_image(url="attachment://{}_{}.png".format(coursename, courses[0].number))
+
       global coursemsg
       coursemsg = await message.channel.send(file=file, embed=embed)
+
       for x in range(len(similarcoursesstrings[:3])):
         await coursemsg.add_reaction(emojidict[x+1])
       if (len(similarcoursesstrings) > 3):
-        await coursemsg.add_reaction("↕️")
+        await coursemsg.add_reaction("⏬")
 
     else:
       embed=discord.Embed(
         description = "No courses found! Please try again",
         color=0xF59F16,
       )
+
       embed.set_author(
       name = 'MU Grades',
       icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
@@ -177,14 +195,17 @@ async def on_message(message):
 """.format(rechours["SUNDAY"], rechours["MONDAY"], rechours["TUESDAY"], rechours["WEDNESDAY"], rechours["THURSDAY"], rechours["FRIDAY"], rechours["SATURDAY"]),
         color=0xF59F16,
     )
+
     embed.set_author(
       name = "Mizzou Rec",
       url="https://mizzourec.com/",
       icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
     )
+
     embed.set_footer(
       text="Showing schedule for {}".format(rec.getWeek())
     )
+
     await message.channel.send(embed=embed)
 
 #COVID
@@ -213,67 +234,54 @@ async def on_message(message):
 """,
         color=0xF59F16,
     )
+
     embed.set_author(
       name = "MU COVID-19 INFORMATION",
       url="https://missouri.edu/covid",
       icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
     )
+
     embed.set_footer(
       text="*Information last updated as of 07/13/2022"
     )
+
     await message.channel.send(embed=embed)
 
 #GIFCOMMANDS
   if (msg == '/dance'):
-    embed=discord.Embed(
-    color=0xF59F16
-    )
+    embed=discord.Embed(color=0xF59F16)
     embed.set_author(
     name=('{} danced!'.format(auth)), 
     icon_url=(message.author.avatar_url)
     )
-    embed.set_image(
-    url='https://c.tenor.com/BDxIoo-dxPgAAAAC/missouri-tigers-truman-the-tiger.gif'
-    )
+    embed.set_image(url='https://c.tenor.com/BDxIoo-dxPgAAAAC/missouri-tigers-truman-the-tiger.gif')
     await message.channel.send(embed=embed)
 
   if (msg == '/thumbsup'):
-      embed=discord.Embed(
-      color=0xF59F16
-      )
+      embed=discord.Embed(color=0xF59F16)
       embed.set_author(
       name=('{} sent a thumbs up!'.format(auth)), 
       icon_url=(message.author.avatar_url)
       )
-      embed.set_image(
-      url='https://media3.giphy.com/media/S6foDbT2nnSoAZlPNS/giphy.gif?cid=790b761118c586046ec8a0611a72b517fe865bf489ed48dc&rid=giphy.gif&ct=g'
-      )
+      embed.set_image(url='https://media3.giphy.com/media/S6foDbT2nnSoAZlPNS/giphy.gif?cid=790b761118c586046ec8a0611a72b517fe865bf489ed48dc&rid=giphy.gif&ct=g')
       await message.channel.send(embed=embed)
 
   if (msg == '/surprised'):
-      embed=discord.Embed(
-      color=0xF59F16
-      )
+      embed=discord.Embed(color=0xF59F16)
       embed.set_author(
       name=('{} was surprised!'.format(auth)), 
       icon_url=(message.author.avatar_url)
       )
-      embed.set_image(
-      url='https://d98lmo17970r8.cloudfront.net/images/2017/12/4/Reax_truman_oh_no.gif'
-      )
+      embed.set_image(url='https://d98lmo17970r8.cloudfront.net/images/2017/12/4/Reax_truman_oh_no.gif')
       await message.channel.send(embed=embed)
  
   if (msg == '/clap'):
-      embed=discord.Embed(
-      color=0xF59F16
-      )
+      embed=discord.Embed(color=0xF59F16)
       embed.set_author(
       name=('{} claps!'.format(auth)), 
       icon_url=(message.author.avatar_url)
       )
-      embed.set_image(
-      url='https://c.tenor.com/g12vGZQ5nPUAAAAC/missouri-mizzoufootball.gif'
-      )
+      embed.set_image(url='https://c.tenor.com/g12vGZQ5nPUAAAAC/missouri-mizzoufootball.gif')
       await message.channel.send(embed=embed)
 
 page = 0
@@ -285,11 +293,13 @@ async def on_reaction_add(reaction, user):
       global maincourse
       global similarcourses
       global similarcoursesstrings
-      if str(reaction.emoji) == "↕️":
+
+      if str(reaction.emoji) == "⏬":
           newResult = discord.Embed(
             color=0xF59F16,
             title = "**{} {}**".format(courses[0].dept, courses[0].number),
           )
+
           newResult.set_author(
           name = 'MU Grades',
           icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
@@ -302,41 +312,50 @@ async def on_reaction_add(reaction, user):
             2: "2️⃣",
             3: "3️⃣"
           }
+
           for similarcourse in similarcoursesstrings[:3]:
             i += 1
             txt += "\n{} {}".format(emojidict[i],similarcourse)
           for similarcourse in similarcoursesstrings[3:10]:
             i += 1
             txt += "\n {}) {}".format(i,similarcourse)
-          newResult.set_footer(
-            text=txt
-          )
+
+          newResult.set_footer(text=txt)
           newResult.add_field(name="**Instructor**", value="{}".format(courses[0].instructor.title()), inline=True)
           newResult.add_field(name="**Section**", value="{}".format(courses[0].section), inline=True)
           newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(courses[0]))), inline=True)
-          newResult.set_image(url="attachment://{}_{}.png".format(courses[0].dept, courses[0].number))
+
+          coursename = re.sub(r'[^a-zA-Z]', '', courses[0].dept)
+          newResult.set_image(url="attachment://{}_{}.png".format(coursename, courses[0].number))
+
           await reaction.message.edit(embed=newResult)
+
           if len(similarcoursesstrings) > 10:
             await coursemsg.add_reaction("⬅️")
             await coursemsg.add_reaction('➡️')
+
       if str(reaction.emoji) == "➡️":
         await reaction.remove(user)
+
         if page < len(similarcoursesstrings)/10 - 1:
           page += 1
           newResult = discord.Embed(
             color=0xF59F16,
             title = "**{} {}**".format(courses[0].dept, courses[0].number),
           )
+
           newResult.set_author(
           name = 'MU Grades',
           icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
           )
+
           txt = "Similar search results ({}):\t\t\t\t\t\t\t\t\t\t    Page {}/{}".format((len(similarcoursesstrings)),page+1,str(math.ceil(len(similarcoursesstrings)/10)))
           emojidict = {
             1: "1️⃣",
             2: "2️⃣",
             3: "3️⃣"
           }
+
           if page == 0:
             i = 0
             for similarcourse in similarcoursesstrings[:3]:
@@ -350,35 +369,43 @@ async def on_reaction_add(reaction, user):
             for similarcourse in similarcoursesstrings[page*10:page*10+10]:
               i += 1
               txt += "\n {}) {}".format(i,similarcourse)
-          newResult.set_footer(
-            text=txt
-          )
+
+          newResult.set_footer(text=txt)
           newResult.add_field(name="**Instructor**", value="{}".format(courses[0].instructor.title()), inline=True)
           newResult.add_field(name="**Section**", value="{}".format(courses[0].section), inline=True)
           newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(courses[0]))), inline=True)
-          newResult.set_image(url="attachment://{}_{}.png".format(courses[0].dept, courses[0].number))
+
+          coursename = re.sub(r'[^a-zA-Z]', '', courses[0].dept)
+          newResult.set_image(url="attachment://{}_{}.png".format(coursename, courses[0].number))
+
           await reaction.message.edit(embed=newResult)
+
           if len(similarcoursesstrings) > 20:
             await coursemsg.add_reaction("⬅️")
             await coursemsg.add_reaction('➡️')
+
       if str(reaction.emoji) == "⬅️":
         await reaction.remove(user)
+
         if page > 0:
           page -= 1
           newResult = discord.Embed(
             color=0xF59F16,
             title = "**{} {}**".format(courses[0].dept, courses[0].number),
           )
+
           newResult.set_author(
           name = 'MU Grades',
           icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
           )
+
           txt = "Similar search results ({}):\t\t\t\t\t\t\t\t\t\t    Page {}/{}".format((len(similarcoursesstrings)),page+1,str(math.ceil(len(similarcoursesstrings)/10)))
           emojidict = {
             1: "1️⃣",
             2: "2️⃣",
             3: "3️⃣"
           }
+
           if page == 0:
             i = 0
             for similarcourse in similarcoursesstrings[:3]:
@@ -392,73 +419,100 @@ async def on_reaction_add(reaction, user):
             for similarcourse in similarcoursesstrings[page*10:page*10+10]:
               i += 1
               txt += "\n {}) {}".format(i,similarcourse)
-          newResult.set_footer(
-            text=txt
-          )
+
+          newResult.set_footer(text=txt)
           newResult.add_field(name="**Instructor**", value="{}".format(courses[0].instructor.title()), inline=True)
           newResult.add_field(name="**Section**", value="{}".format(courses[0].section), inline=True)
           newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(courses[0]))), inline=True)
-          newResult.set_image(url="attachment://{}_{}.png".format(courses[0].dept, courses[0].number))
+
+          coursename = re.sub(r'[^a-zA-Z]', '', courses[0].dept)
+          newResult.set_image(url="attachment://{}_{}.png".format(coursename, courses[0].number))
+
           await reaction.message.edit(embed=newResult)
+
           if len(similarcoursesstrings) > 20:
             await coursemsg.add_reaction("⬅️")
             await coursemsg.add_reaction('➡️')
+
       if str(reaction.emoji) == "1️⃣":
           gradecalculations.generateCourseImage(similarcourses[1])
+
           newResult = discord.Embed(
             color=0xF59F16,
             title = "**{} {}**".format(similarcourses[1].dept, similarcourses[1].number),
           )
+
           newResult.set_author(
           name = 'MU Grades',
           icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
           )
+
           newResult.set_footer(
             text="Queried by: {}\t\t\t\t*Data last updated on 7/10/2022".format(maincourse)
           )
+
           newResult.add_field(name="**Instructor**", value="{}".format(similarcourses[1].instructor.title()), inline=True)
           newResult.add_field(name="**Section**", value="{}".format(similarcourses[1].section), inline=True)
           newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(similarcourses[1]))), inline=True)
-          file = discord.File("grades/graph.png", filename="{}_{}.png".format(similarcourses[1].dept, similarcourses[1].number))
-          newResult.set_image(url="attachment://{}_{}.png".format(similarcourses[1].dept, similarcourses[1].number))
+
+          coursename = re.sub(r'[^a-zA-Z]', '', similarcourses[1].dept)
+          file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[1].number))
+          newResult.set_image(url="attachment://{}_{}.png".format(coursename, similarcourses[1].number))
+
           await chan.send(file=file, embed=newResult)
+
       if str(reaction.emoji) == "2️⃣":
           gradecalculations.generateCourseImage(similarcourses[2])
+
           newResult = discord.Embed(
             color=0xF59F16,
             title = "**{} {}**".format(similarcourses[2].dept, similarcourses[2].number),
           )
+
           newResult.set_author(
           name = 'MU Grades',
           icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
           )
+
           newResult.set_footer(
             text="Queried by: {}\t\t\t\t*Data last updated on 7/10/2022\n".format(maincourse)
           )
+
           newResult.add_field(name="**Instructor**", value="{}".format(similarcourses[2].instructor.title()), inline=True)
           newResult.add_field(name="**Section**", value="{}".format(similarcourses[2].section), inline=True)
           newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(similarcourses[2]))), inline=True)
-          file = discord.File("grades/graph.png", filename="{}_{}.png".format(similarcourses[2].dept, similarcourses[2].number))
-          newResult.set_image(url="attachment://{}_{}.png".format(similarcourses[2].dept, similarcourses[2].number))
+
+          coursename = re.sub(r'[^a-zA-Z]', '', similarcourses[2].dept)
+          file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[2].number))
+          newResult.set_image(url="attachment://{}_{}.png".format(coursename, similarcourses[2].number))
+
           await chan.send(file=file, embed=newResult)
+
       if str(reaction.emoji) == "3️⃣":
           gradecalculations.generateCourseImage(similarcourses[3])
+
           newResult = discord.Embed(
             color=0xF59F16,
             title = "**{} {}**".format(similarcourses[3].dept, similarcourses[3].number),
           )
+
           newResult.set_author(
           name = 'MU Grades',
           icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
           )
+
           newResult.set_footer(
             text="Queried by: {}\t\t\t\t*Data last updated on 7/10/2022".format(maincourse)
           )
+
           newResult.add_field(name="**Instructor**", value="{}".format(similarcourses[3].instructor.title()), inline=True)
           newResult.add_field(name="**Section**", value="{}".format(similarcourses[3].section), inline=True)
           newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(similarcourses[3]))), inline=True)
-          file = discord.File("grades/graph.png", filename="{}_{}.png".format(similarcourses[3].dept, similarcourses[3].number))
-          newResult.set_image(url="attachment://{}_{}.png".format(similarcourses[3].dept, similarcourses[3].number))
+
+          coursename = re.sub(r'[^a-zA-Z]', '', similarcourses[3].dept)
+          file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[3].number))
+          newResult.set_image(url="attachment://{}_{}.png".format(coursename, similarcourses[3].number))
+
           await chan.send(file=file, embed=newResult)
 
 #TOKEN

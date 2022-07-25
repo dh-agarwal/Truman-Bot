@@ -43,7 +43,7 @@ intendedWords = {
     "marketing": "mrktng",
     "nursing": "nurse",
     "psychology": "psych",
-    "physics": "phys"
+    "physics": "phys",
 }
 
 def getIntendedWord(criteria):

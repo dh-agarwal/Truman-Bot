@@ -1,25 +1,16 @@
-Commands that Truman Bot uses:
+Main commands that Truman Bot uses:
 
     /grades - Displays the grade distribution for the specified class in a nicely formatted bar table
-        /grades [subject] [number] [professor last name (optional)]
-        /grades help
 
     /dining - Displays the menu and time for that day at the specified dining hall and hours
-        /dining [dining hall]
-        /dining help
-        /dining open
 
     /directory - Searches through the directory, displays the student's information
-        /directory [name]
-        /directory help
 
 Other commands:
 
-    Shows hours/info for rec:
-        /rec
+    /rec - Shows hours for rec:
 
-    Shows all commands:
-        /help
+    /help - Shows all commands:
         
     GIFs of Truman dancing:
         /clap
@@ -27,8 +18,4 @@ Other commands:
         /highfive
         /wave
 
-    Covid info for Mizzou:
-        /covid
-
-    Rate my professors:
-        /ratemyprofessors [professor name]
+    /covid - Covid info for Mizzou:
