@@ -20,6 +20,9 @@ import rec.rec as rec
 import directory
 import directory.directorysearch as directorysearch
 import directory.Person as Person
+import grades.Course as Course
+import grades.gradecalculations as gradecalculations
+from discord.app_commands import Choice
 
 
 class client(discord.Client):
@@ -36,6 +39,90 @@ class client(discord.Client):
 
 aclient = client()
 tree = app_commands.CommandTree(aclient)
+
+
+#GRADES
+@tree.command(name = "courses", description='Searches and displays data for a specified course')
+@app_commands.rename(info='search-query')
+@app_commands.describe(info='ex. CS 3050 2018 Spring Xu')
+async def courses(interaction: discord.Interaction, info: str = ""):
+    await interaction.response.defer()
+    global i
+    i = 0
+
+    info = info.strip().split()
+
+    global courses
+    courses = gradecalculations.getCourse(info)
+
+    if (courses != []):
+      global maincourse
+      maincourse = "{} {}".format(courses[0].dept, courses[0].number)
+
+      gradecalculations.generateCourseImage(courses[0])
+      embed = discord.Embed(
+        color=0xF59F16,
+        title = "**{} {}**".format(courses[0].dept, courses[0].number),
+      )
+
+      embed.set_author(
+      name = 'MU Grades',
+      icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+      )
+
+      global similarcourses
+      global similarcoursesstrings
+      similarcourses = []
+      similarcoursesstrings = []
+      for i in range(len(courses)):
+        if ("{} {} ({})".format(courses[i].dept, courses[i].number, courses[i].title.title())) not in similarcoursesstrings:
+          similarcoursesstrings.append("{} {} ({})".format(courses[i].dept, courses[i].number, courses[i].title.title()))
+          similarcourses.append(courses[i])
+      similarcoursesstrings.remove("{} {} ({})".format(courses[0].dept, courses[0].number, courses[0].title.title()))
+      txt = "Similar search results ({}):\t\t\t\t\t*Data last updated on 7/10/2022".format((len(similarcoursesstrings)))
+
+      i = 0
+      emojidict = {
+        1: "1️⃣",
+        2: "2️⃣",
+        3: "3️⃣"
+      }
+
+      for similarcourse in similarcoursesstrings[:3]:
+        i += 1
+        txt += "\n{} {}".format(emojidict[i],similarcourse)
+
+      embed.set_footer(text=txt)
+      embed.add_field(name="**Instructor**", value="{}".format(courses[0].instructor.title()), inline=True)
+      embed.add_field(name="**Section**", value="{}".format(courses[0].section), inline=True)
+      embed.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(courses[0]))), inline=True)
+
+      coursename = re.sub(r'[^a-zA-Z]', '', courses[0].dept)
+      file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, courses[0].number))
+      embed.set_image(url="attachment://{}_{}.png".format(coursename, courses[0].number))
+
+      global coursemsg
+
+      await interaction.followup.send(file=file, embed=embed)
+      #coursemsg = await message.channel.send(file=file, embed=embed)
+
+    #   for x in range(len(similarcoursesstrings[:3])):
+    #     await coursemsg.add_reaction(emojidict[x+1])
+    #   if (len(similarcoursesstrings) > 3):
+    #     await coursemsg.add_reaction("⏬")
+
+    else:
+      embed=discord.Embed(
+        description = "No courses found! Please try again",
+        color=0xF59F16,
+      )
+
+      embed.set_author(
+      name = 'MU Grades',
+      icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+      )
+
+      await interaction.followup.send(embed=embed)
 
 
 #DIRECTORY
@@ -106,6 +193,20 @@ async def personsearch(interaction: discord.Interaction, firstname: str = "", la
                 embed.add_field(name="City/State", value="{}, {}".format(p1.city, p1.state), inline=True)
         await interaction.followup.send(embed=embed)
 
+
+#DINING
+@tree.command(name = "dining", description='Displays the menu and hours for the specified dining hall')
+@app_commands.describe(hall='Dining Hall')
+@app_commands.choices(hall = [
+    Choice(name = "Sabai", value = "Sabai"),
+    Choice(name = "Plaza 900 Dining", value = "Plaza 900 Dining"),
+    Choice(name = "Baja Grill", value = "Baja Grill"),
+    Choice(name = "Sunshine Sushi", value = "Sunshine Sushi"),
+    Choice(name = "Wheatstone Bistro", value = "Wheatstone Bistro")
+])
+async def dining(interaction: discord.Interaction, hall : str):
+    await interaction.response.defer()
+    await interaction.followup.send(f"{hall}")
 
 #REC
 @tree.command(name = "rec", description='Displays hours for the Rec Facility this week')
@@ -201,7 +302,7 @@ async def dance(interaction: discord.Interaction):
     await interaction.followup.send(embed=embed)
 
 @tree.command(name = "thumbsup", description='Posts a GIF of Truman giving a thumbs up')
-async def dance(interaction: discord.Interaction):
+async def thumbsup(interaction: discord.Interaction):
     await interaction.response.defer()
     embed=discord.Embed(color=0xF59F16)
     embed.set_author(
@@ -212,7 +313,7 @@ async def dance(interaction: discord.Interaction):
     await interaction.followup.send(embed=embed)
 
 @tree.command(name = "surprised", description='Posts a GIF of Truman being surprised')
-async def dance(interaction: discord.Interaction):
+async def surprised(interaction: discord.Interaction):
     await interaction.response.defer()
     embed=discord.Embed(color=0xF59F16)
     embed.set_author(
@@ -223,7 +324,7 @@ async def dance(interaction: discord.Interaction):
     await interaction.followup.send(embed=embed)
 
 @tree.command(name = "clap", description='Posts a GIF of Truman clapping')
-async def dance(interaction: discord.Interaction):
+async def clap(interaction: discord.Interaction):
     await interaction.response.defer()
     embed=discord.Embed(color=0xF59F16)
     embed.set_author(

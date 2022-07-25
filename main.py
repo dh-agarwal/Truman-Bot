@@ -30,7 +30,7 @@ async def on_message(message):
     return
 
 #DIRECTORY
-  if msg.startswith('/directory'):
+  if msg.startswith('!directory'):
     info = msg.split()
 
     if (len(info) == 2):
@@ -95,7 +95,7 @@ async def on_message(message):
     await message.channel.send(embed=embed)
 
 #GRADES
-  if msg.startswith('/grades'):
+  if msg.startswith('!grades'):
     global i
     i = 0
     msg = msg.strip()
@@ -173,7 +173,7 @@ async def on_message(message):
       await message.channel.send(embed=embed)
 
 #REC
-  if (msg.startswith('/rec')):
+  if (msg.startswith('!rec')):
     rechours = rec.getDaysDictionary(rec.getWeekDictionary())
     embed=discord.Embed(
         title="Rec Center Facility Hours",
@@ -209,7 +209,7 @@ async def on_message(message):
     await message.channel.send(embed=embed)
 
 #COVID
-  if (msg.startswith('/covid')):
+  if (msg.startswith('!covid')):
     embed=discord.Embed(
         title="Mizzou Covid-19 Information",
         url="https://missouri.edu/covid",
