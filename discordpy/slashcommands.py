@@ -24,17 +24,76 @@ import grades.Course as Course
 import grades.gradecalculations as gradecalculations
 from discord.app_commands import Choice
 from discord.ext import commands
+from discord.ui import Button,View
 
-page = 1
+
+class leftButton(Button):
+  def __init__(self):
+    super().__init__(emoji="<:before_check:754948796487565332>", style=discord.ButtonStyle.green)
+
+  async def callback(self, interaction):
+    print('a')
+    await interaction.response.edit_message(view = None, content = "clicked again")
+    await interaction.followup.send("clicked again wtf")
 
 class Menu(discord.ui.View):
   def __init__(self):
     super().__init__()
     self.value = None
 
-  @discord.ui.button(label="Send Message", style=discord.ButtonStyle.grey)
-  async def menu1(self, button:discord.ui.Button, interaction:discord.Interaction):
-    print(page)
+  async def editafterclicked(self, interaction: discord.Interaction):
+    #await interaction.response.edit_message(content = "clicked")
+    self.clear_items()
+    first = Button(emoji="1️⃣", style=discord.ButtonStyle.gray)
+    second = Button(emoji="2️⃣", style=discord.ButtonStyle.gray)
+    dropdown = Button(emoji="<:dropdownarrow:1001307846169870427>", style=discord.ButtonStyle.blurple)
+    left = leftButton()
+    right = Button(emoji="<:next_check:754948796361736213>", style=discord.ButtonStyle.green, disabled=True)
+    self.add_item(first)
+    self.add_item(second)
+    self.add_item(dropdown)
+    self.add_item(left)
+    self.add_item(right)
+    
+    await interaction.response.edit_message(view = self, content = "asdf")
+  #   await first.clickedagain(interaction)
+
+  # @discord.ui.button(emoji="1️⃣", style=discord.ButtonStyle.gray)
+  # @discord.ui.button(emoji="2️⃣", style=discord.ButtonStyle.gray)
+  # @discord.ui.button(emoji="<:dropdownarrow:1001307846169870427>", style=discord.ButtonStyle.blurple)
+  # @discord.ui.button(emoji="<:before_check:754948796487565332>", style=discord.ButtonStyle.green)
+  # @discord.ui.button(emoji="<:next_check:754948796361736213>", style=discord.ButtonStyle.green)
+  # async def clickedagain(self, interaction: discord.Interaction):
+  #   await interaction.response.edit_message(content = "clickedagain")
+    
+  # @discord.ui.button(emoji="1️⃣", style=discord.ButtonStyle.gray)
+  # async def firstresult(self,interaction:discord.Interaction, button:discord.ui.Button):
+  #   print("next")
+  #   await self.editafterclicked(interaction)
+
+  # @discord.ui.button(emoji="2️⃣", style=discord.ButtonStyle.gray)
+  # async def secondresult(self,interaction:discord.Interaction, button:discord.ui.Button):
+  #   print("next")
+  #   await self.editafterclicked(interaction)
+
+  @discord.ui.button(emoji="<:dropdownarrow:1001307846169870427>", style=discord.ButtonStyle.blurple)
+  async def dropdown(self,interaction:discord.Interaction, button:discord.ui.Button):
+    print("next")
+    await self.editafterclicked(interaction)
+
+
+  # @discord.ui.button(emoji="<:before_check:754948796487565332>", style=discord.ButtonStyle.green)
+  # async def nextbutton(self,interaction:discord.Interaction, button:discord.ui.Button):
+  #   print("next")
+  #   await self.editafterclicked(interaction)
+    
+  # @discord.ui.button(emoji="<:next_check:754948796361736213>", style=discord.ButtonStyle.green)
+  # async def backbutton(self,interaction:discord.Interaction, button:discord.ui.Button):
+  #   print("next")
+  #   await self.editafterclicked(interaction)
+
+
+  
 
 class client(discord.Client):
   def __init__(self):
