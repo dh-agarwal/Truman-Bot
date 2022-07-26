@@ -24,95 +24,9 @@ import grades.Course as Course
 import grades.gradecalculations as gradecalculations
 from discord.app_commands import Choice
 from discord.ext import commands
-from discord.ui import Button,View
-
-class rightButton(Button):
-  def __init__(self):
-    super().__init__(emoji="<:next_check:754948796361736213>", style=discord.ButtonStyle.green)
-
-  async def callback(self, interaction):
-    await interaction.response.edit_message(content = "Clicked right")
-
-class leftButton(Button):
-  def __init__(self):
-    super().__init__(emoji="<:before_check:754948796487565332>", style=discord.ButtonStyle.green)
-
-  async def callback(self, interaction):
-    await interaction.response.edit_message(content = "Clicked left")
-
-class downButton(Button):
-  def __init__(self):
-    super().__init__(emoji="<:dropdownarrow:1001307846169870427>", style=discord.ButtonStyle.blurple)
-
-  async def callback(self, interaction):
-    await interaction.response.edit_message(content = "Clicked down")
-
-class twoButton(Button):
-  def __init__(self):
-    super().__init__(emoji="2️⃣", style=discord.ButtonStyle.gray)
-
-  async def callback(self, interaction):
-    await interaction.response.edit_message(content = "Clicked two")
-
-class threeButton(Button):
-  def __init__(self):
-    super().__init__(emoji="3️⃣", style=discord.ButtonStyle.gray)
-
-  async def callback(self, interaction):
-    await interaction.response.edit_message(content = "Clicked three")
-
-class Menu(discord.ui.View):
-  def __init__(self):
-    super().__init__()
-    self.value = None
-
-  async def editafterclicked(self, interaction: discord.Interaction):
-    oldview = self
-    self.clear_items()
-    self.add_item(twoButton())
-    self.add_item(threeButton())
-    self.add_item(downButton())
-    self.add_item(leftButton())
-    self.add_item(rightButton())
-    await interaction.response.edit_message(view = self, content = "asdf")
-  #   await first.clickedagain(interaction)
-
-  # @discord.ui.button(emoji="1️⃣", style=discord.ButtonStyle.gray)
-  # @discord.ui.button(emoji="2️⃣", style=discord.ButtonStyle.gray)
-  # @discord.ui.button(emoji="<:dropdownarrow:1001307846169870427>", style=discord.ButtonStyle.blurple)
-  # @discord.ui.button(emoji="<:before_check:754948796487565332>", style=discord.ButtonStyle.green)
-  # @discord.ui.button(emoji="<:next_check:754948796361736213>", style=discord.ButtonStyle.green)
-  # async def clickedagain(self, interaction: discord.Interaction):
-  #   await interaction.response.edit_message(content = "clickedagain")
-    
-  # @discord.ui.button(emoji="1️⃣", style=discord.ButtonStyle.gray)
-  # async def firstresult(self,interaction:discord.Interaction, button:discord.ui.Button):
-  #   print("next")
-  #   await self.editafterclicked(interaction)
-
-  # @discord.ui.button(emoji="2️⃣", style=discord.ButtonStyle.gray)
-  # async def secondresult(self,interaction:discord.Interaction, button:discord.ui.Button):
-  #   print("next")
-  #   await self.editafterclicked(interaction)
-
-  @discord.ui.button(emoji="<:dropdownarrow:1001307846169870427>", style=discord.ButtonStyle.blurple)
-  async def dropdown(self,interaction:discord.Interaction, button:discord.ui.Button):
-    print("next")
-    await self.editafterclicked(interaction)
-
-
-  # @discord.ui.button(emoji="<:before_check:754948796487565332>", style=discord.ButtonStyle.green)
-  # async def nextbutton(self,interaction:discord.Interaction, button:discord.ui.Button):
-  #   print("next")
-  #   await self.editafterclicked(interaction)
-    
-  # @discord.ui.button(emoji="<:next_check:754948796361736213>", style=discord.ButtonStyle.green)
-  # async def backbutton(self,interaction:discord.Interaction, button:discord.ui.Button):
-  #   print("next")
-  #   await self.editafterclicked(interaction)
-
-
-  
+from CoursesButtonMenu import MenuOne as MenuOne
+from CoursesButtonMenu import MenuOneTwo as MenuOneTwo
+from CoursesButtonMenu import MenuOneTwoDrop as MenuOneTwoDrop
 
 class client(discord.Client):
   def __init__(self):
@@ -129,11 +43,11 @@ class client(discord.Client):
 aclient = client()
 tree = app_commands.CommandTree(aclient)
 
-@tree.command(name = "menu", description='menu')
-async def menu(interaction: discord.Interaction):
-  await interaction.response.defer()
-  view = Menu()
-  await interaction.followup.send(view=view)
+# @tree.command(name = "menu", description='menu')
+# async def menu(interaction: discord.Interaction):
+#   await interaction.response.defer()
+#   view = Menu()
+#   await interaction.followup.send(view=view)
 
 
 #GRADES
@@ -174,16 +88,15 @@ async def courses(interaction: discord.Interaction, info: str = ""):
           similarcoursesstrings.append(f"{courses[i].dept} {courses[i].number} ({courses[i].title.title()})")
           similarcourses.append(courses[i])
       similarcoursesstrings.remove(f"{courses[0].dept} {courses[0].number} ({courses[0].title.title()})")
-      txt = f"Similar search results ({len(similarcoursesstrings)}):\t\t\t\t\t*Data last updated on 7/10/2022"
+      txt = f"Similar search results ({len(similarcoursesstrings)}):\t\t\t*Data last updated on 7/10/2022"
 
       i = 0
       emojidict = {
         1: "1️⃣",
         2: "2️⃣",
-        3: "3️⃣"
       }
 
-      for similarcourse in similarcoursesstrings[:3]:
+      for similarcourse in similarcoursesstrings[:2]:
         i += 1
         txt += f"\n{emojidict[i]} {similarcourse}"
 
@@ -197,13 +110,20 @@ async def courses(interaction: discord.Interaction, info: str = ""):
       embed.set_image(url=f"attachment://{coursename}_{courses[0].number}.png")
 
       global msg
+      if len(similarcoursesstrings) == 0:
+        msg = await interaction.followup.send(file=file, embed=embed)
+      elif len(similarcoursesstrings) == 1:
+        msg = await interaction.followup.send(view=MenuOne(), file=file, embed=embed)
+      elif len(similarcoursesstrings) == 2:
+        msg = await interaction.followup.send(view=MenuOneTwo(), file=file, embed=embed)
+      else:
+        msg = await interaction.followup.send(view=MenuOneTwoDrop(), file=file, embed=embed)
+      
 
-      msg = await interaction.followup.send(file=file, embed=embed)
-
-      for x in range(len(similarcoursesstrings[:3])):
-        await msg.add_reaction(emojidict[x+1])
-      if (len(similarcoursesstrings) > 3):
-        await msg.add_reaction("⏬")
+      # for x in range(len(similarcoursesstrings[:3])):
+      #   await msg.add_reaction(emojidict[x+1])
+      # if (len(similarcoursesstrings) > 3):
+      #   await msg.add_reaction("⏬")
 
     else:
       embed=discord.Embed(
