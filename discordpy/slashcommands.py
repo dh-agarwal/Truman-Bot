@@ -23,7 +23,10 @@ import directory.Person as Person
 import grades.Course as Course
 import grades.gradecalculations as gradecalculations
 from discord.app_commands import Choice
-
+from discord.ext import commands
+from CoursesButtonMenu import MenuOne as MenuOne
+from CoursesButtonMenu import MenuOneTwo as MenuOneTwo
+from CoursesButtonMenu import MenuOneTwoDrop as MenuOneTwoDrop
 
 class client(discord.Client):
   def __init__(self):
@@ -39,6 +42,12 @@ class client(discord.Client):
 
 aclient = client()
 tree = app_commands.CommandTree(aclient)
+
+# @tree.command(name = "menu", description='menu')
+# async def menu(interaction: discord.Interaction):
+#   await interaction.response.defer()
+#   view = Menu()
+#   await interaction.followup.send(view=view)
 
 
 #GRADES
@@ -79,16 +88,15 @@ async def courses(interaction: discord.Interaction, info: str = ""):
           similarcoursesstrings.append(f"{courses[i].dept} {courses[i].number} ({courses[i].title.title()})")
           similarcourses.append(courses[i])
       similarcoursesstrings.remove(f"{courses[0].dept} {courses[0].number} ({courses[0].title.title()})")
-      txt = f"Similar search results ({len(similarcoursesstrings)}):\t\t\t\t\t*Data last updated on 7/10/2022"
+      txt = f"Similar search results ({len(similarcoursesstrings)}):\t\t\t*Data last updated on 7/10/2022"
 
       i = 0
       emojidict = {
         1: "1️⃣",
         2: "2️⃣",
-        3: "3️⃣"
       }
 
-      for similarcourse in similarcoursesstrings[:3]:
+      for similarcourse in similarcoursesstrings[:2]:
         i += 1
         txt += f"\n{emojidict[i]} {similarcourse}"
 
@@ -101,15 +109,21 @@ async def courses(interaction: discord.Interaction, info: str = ""):
       file = discord.File("grades/graph.png", filename=f"{coursename}_{courses[0].number}.png")
       embed.set_image(url=f"attachment://{coursename}_{courses[0].number}.png")
 
-      global coursemsg
+      global msg
+      if len(similarcoursesstrings) == 0:
+        msg = await interaction.followup.send(file=file, embed=embed)
+      elif len(similarcoursesstrings) == 1:
+        msg = await interaction.followup.send(view=MenuOne(), file=file, embed=embed)
+      elif len(similarcoursesstrings) == 2:
+        msg = await interaction.followup.send(view=MenuOneTwo(), file=file, embed=embed)
+      else:
+        msg = await interaction.followup.send(view=MenuOneTwoDrop(), file=file, embed=embed)
+      
 
-      await interaction.followup.send(file=file, embed=embed)
-      #coursemsg = await message.channel.send(file=file, embed=embed)
-
-    #   for x in range(len(similarcoursesstrings[:3])):
-    #     await coursemsg.add_reaction(emojidict[x+1])
-    #   if (len(similarcoursesstrings) > 3):
-    #     await coursemsg.add_reaction("⏬")
+      # for x in range(len(similarcoursesstrings[:3])):
+      #   await msg.add_reaction(emojidict[x+1])
+      # if (len(similarcoursesstrings) > 3):
+      #   await msg.add_reaction("⏬")
 
     else:
       embed=discord.Embed(
