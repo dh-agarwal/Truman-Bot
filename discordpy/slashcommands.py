@@ -26,15 +26,40 @@ from discord.app_commands import Choice
 from discord.ext import commands
 from discord.ui import Button,View
 
+class rightButton(Button):
+  def __init__(self):
+    super().__init__(emoji="<:next_check:754948796361736213>", style=discord.ButtonStyle.green)
+
+  async def callback(self, interaction):
+    await interaction.response.edit_message(content = "Clicked right")
 
 class leftButton(Button):
   def __init__(self):
     super().__init__(emoji="<:before_check:754948796487565332>", style=discord.ButtonStyle.green)
 
   async def callback(self, interaction):
-    print('a')
-    await interaction.response.edit_message(view = None, content = "clicked again")
-    await interaction.followup.send("clicked again wtf")
+    await interaction.response.edit_message(content = "Clicked left")
+
+class downButton(Button):
+  def __init__(self):
+    super().__init__(emoji="<:dropdownarrow:1001307846169870427>", style=discord.ButtonStyle.blurple)
+
+  async def callback(self, interaction):
+    await interaction.response.edit_message(content = "Clicked down")
+
+class twoButton(Button):
+  def __init__(self):
+    super().__init__(emoji="2️⃣", style=discord.ButtonStyle.gray)
+
+  async def callback(self, interaction):
+    await interaction.response.edit_message(content = "Clicked two")
+
+class threeButton(Button):
+  def __init__(self):
+    super().__init__(emoji="3️⃣", style=discord.ButtonStyle.gray)
+
+  async def callback(self, interaction):
+    await interaction.response.edit_message(content = "Clicked three")
 
 class Menu(discord.ui.View):
   def __init__(self):
@@ -42,19 +67,13 @@ class Menu(discord.ui.View):
     self.value = None
 
   async def editafterclicked(self, interaction: discord.Interaction):
-    #await interaction.response.edit_message(content = "clicked")
+    oldview = self
     self.clear_items()
-    first = Button(emoji="1️⃣", style=discord.ButtonStyle.gray)
-    second = Button(emoji="2️⃣", style=discord.ButtonStyle.gray)
-    dropdown = Button(emoji="<:dropdownarrow:1001307846169870427>", style=discord.ButtonStyle.blurple)
-    left = leftButton()
-    right = Button(emoji="<:next_check:754948796361736213>", style=discord.ButtonStyle.green, disabled=True)
-    self.add_item(first)
-    self.add_item(second)
-    self.add_item(dropdown)
-    self.add_item(left)
-    self.add_item(right)
-    
+    self.add_item(twoButton())
+    self.add_item(threeButton())
+    self.add_item(downButton())
+    self.add_item(leftButton())
+    self.add_item(rightButton())
     await interaction.response.edit_message(view = self, content = "asdf")
   #   await first.clickedagain(interaction)
 
