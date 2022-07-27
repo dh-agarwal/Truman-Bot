@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
-import directory.Person as Person
+import src.directory.Person as Person
 
 def getPersonWithSoup(soup):
     keywords = ["Email:", "Title:", "Department:", "Phone:", "Address:", "City:", "State:"]

@@ -53,7 +53,7 @@ def getTotalStudents(course):
 courseList = []
 
 for year in range(2022,1997,-1):
-    with open('grades/gradedata/grades{}.csv'.format(year)) as csv_file:
+    with open('src/grades/gradedata/grades{}.csv'.format(year)) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         next(csv_reader)
         for row in csv_reader:

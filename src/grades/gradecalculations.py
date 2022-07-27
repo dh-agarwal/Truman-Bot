@@ -1,8 +1,8 @@
 from calendar import c
-import grades.Course as Course
+import src.grades.Course as Course
 import matplotlib.pyplot as plt
 from matplotlib.offsetbox import AnchoredText
-import grades.intendedwords as intendedwords
+import src.grades.intendedwords as intendedwords
 import re
 
 courseList = Course.getCourseList()
@@ -93,5 +93,5 @@ def generateCourseImage(course):
     plt.subplots_adjust( bottom=.1)
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
-    plt.savefig("grades/graph.png", bbox_inches='tight',pad_inches = .5)
+    plt.savefig("src/grades/graph.png", bbox_inches='tight',pad_inches = .5)
     plt.close()

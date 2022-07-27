@@ -10,10 +10,10 @@ import datetime
 from dotenv import load_dotenv, find_dotenv
 import math
 import re
-import rec.rec as rec
-import directory.directorysearch as directorysearch
-import grades.Course as Course
-import grades.gradecalculations as gradecalculations
+import src.rec.rec as rec
+import src.directory.directorysearch as directorysearch
+import src.grades.Course as Course
+import src.grades.gradecalculations as gradecalculations
 from discord.app_commands import Choice
 from discord.ui import Button
 
@@ -52,7 +52,7 @@ class MenuOne(discord.ui.View):
     newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(similarcourses[1]))), inline=True)
 
     coursename = re.sub(r'[^a-zA-Z]', '', similarcourses[1].dept)
-    file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[1].number))
+    file = discord.File("src/grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[1].number))
     newResult.set_image(url="attachment://{}_{}.png".format(coursename, similarcourses[1].number))
 
     await interaction.followup.send(file=file, embed=newResult)
@@ -86,7 +86,7 @@ class MenuOneTwo(discord.ui.View):
     newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(similarcourses[1]))), inline=True)
 
     coursename = re.sub(r'[^a-zA-Z]', '', similarcourses[1].dept)
-    file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[1].number))
+    file = discord.File("src/grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[1].number))
     newResult.set_image(url="attachment://{}_{}.png".format(coursename, similarcourses[1].number))
 
     await interaction.followup.send(file=file, embed=newResult)
@@ -115,7 +115,7 @@ class MenuOneTwo(discord.ui.View):
     newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(similarcourses[2]))), inline=True)
 
     coursename = re.sub(r'[^a-zA-Z]', '', similarcourses[2].dept)
-    file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[2].number))
+    file = discord.File("src/grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[2].number))
     newResult.set_image(url="attachment://{}_{}.png".format(coursename, similarcourses[2].number))
 
     await interaction.followup.send(file=file, embed=newResult)
@@ -165,7 +165,7 @@ class MenuOneTwoDrop(discord.ui.View):
     newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(similarcourses[1]))), inline=True)
 
     coursename = re.sub(r'[^a-zA-Z]', '', similarcourses[1].dept)
-    file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[1].number))
+    file = discord.File("src/grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[1].number))
     newResult.set_image(url="attachment://{}_{}.png".format(coursename, similarcourses[1].number))
 
     await interaction.followup.send(file=file, embed=newResult)
@@ -195,7 +195,7 @@ class MenuOneTwoDrop(discord.ui.View):
     newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(similarcourses[2]))), inline=True)
 
     coursename = re.sub(r'[^a-zA-Z]', '', similarcourses[2].dept)
-    file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[2].number))
+    file = discord.File("src/grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[2].number))
     newResult.set_image(url="attachment://{}_{}.png".format(coursename, similarcourses[2].number))
 
     await interaction.followup.send(file=file, embed=newResult)
@@ -269,7 +269,7 @@ class MenuOneTwoDropAllEnabled(discord.ui.View):
     newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(similarcourses[1]))), inline=True)
 
     coursename = re.sub(r'[^a-zA-Z]', '', similarcourses[1].dept)
-    file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[1].number))
+    file = discord.File("src/grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[1].number))
     newResult.set_image(url="attachment://{}_{}.png".format(coursename, similarcourses[1].number))
 
     await interaction.followup.send(file=file, embed=newResult)
@@ -333,7 +333,7 @@ class MenuOneTwoDropAllEnabled(discord.ui.View):
     newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(similarcourses[2]))), inline=True)
 
     coursename = re.sub(r'[^a-zA-Z]', '', similarcourses[2].dept)
-    file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[2].number))
+    file = discord.File("src/grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[2].number))
     newResult.set_image(url="attachment://{}_{}.png".format(coursename, similarcourses[2].number))
 
     await interaction.followup.send(file=file, embed=newResult)
@@ -548,7 +548,7 @@ class MenuOneTwoDropRightDisabled(discord.ui.View):
     newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(similarcourses[1]))), inline=True)
 
     coursename = re.sub(r'[^a-zA-Z]', '', similarcourses[1].dept)
-    file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[1].number))
+    file = discord.File("src/grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[1].number))
     newResult.set_image(url="attachment://{}_{}.png".format(coursename, similarcourses[1].number))
 
     await interaction.followup.send(file=file, embed=newResult)
@@ -612,7 +612,7 @@ class MenuOneTwoDropRightDisabled(discord.ui.View):
     newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(similarcourses[2]))), inline=True)
 
     coursename = re.sub(r'[^a-zA-Z]', '', similarcourses[2].dept)
-    file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[2].number))
+    file = discord.File("src/grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[2].number))
     newResult.set_image(url="attachment://{}_{}.png".format(coursename, similarcourses[2].number))
 
     await interaction.followup.send(file=file, embed=newResult)
@@ -773,7 +773,7 @@ class MenuOneTwoDropLeftDisabled(discord.ui.View):
     newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(similarcourses[1]))), inline=True)
 
     coursename = re.sub(r'[^a-zA-Z]', '', similarcourses[1].dept)
-    file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[1].number))
+    file = discord.File("src/grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[1].number))
     newResult.set_image(url="attachment://{}_{}.png".format(coursename, similarcourses[1].number))
 
     await interaction.followup.send(file=file, embed=newResult)
@@ -802,7 +802,7 @@ class MenuOneTwoDropLeftDisabled(discord.ui.View):
     newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(similarcourses[2]))), inline=True)
 
     coursename = re.sub(r'[^a-zA-Z]', '', similarcourses[2].dept)
-    file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[2].number))
+    file = discord.File("src/grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[2].number))
     newResult.set_image(url="attachment://{}_{}.png".format(coursename, similarcourses[2].number))
 
     await interaction.followup.send(file=file, embed=newResult)
@@ -1072,7 +1072,7 @@ class oneButton(Button):
     newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(similarcourses[1]))), inline=True)
 
     coursename = re.sub(r'[^a-zA-Z]', '', similarcourses[1].dept)
-    file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[1].number))
+    file = discord.File("src/grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[1].number))
     newResult.set_image(url="attachment://{}_{}.png".format(coursename, similarcourses[1].number))
 
 
@@ -1105,7 +1105,7 @@ class twoButton(Button):
     newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(similarcourses[2]))), inline=True)
 
     coursename = re.sub(r'[^a-zA-Z]', '', similarcourses[2].dept)
-    file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[2].number))
+    file = discord.File("src/grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[2].number))
     newResult.set_image(url="attachment://{}_{}.png".format(coursename, similarcourses[2].number))
 
     await interaction.followup.send(file=file, embed=newResult)
@@ -1188,7 +1188,7 @@ async def courses(interaction: discord.Interaction, info: str = ""):
       embed.add_field(name="**Total Students**", value=f"{str(Course.getTotalStudents(courses[0]))}", inline=True)
 
       coursename = re.sub(r'[^a-zA-Z]', '', courses[0].dept)
-      file = discord.File("grades/graph.png", filename=f"{coursename}_{courses[0].number}.png")
+      file = discord.File("src/grades/graph.png", filename=f"{coursename}_{courses[0].number}.png")
       embed.set_image(url=f"attachment://{coursename}_{courses[0].number}.png")
 
       if len(similarcoursesstrings) == 0:
