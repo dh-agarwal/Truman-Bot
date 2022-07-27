@@ -1,31 +1,20 @@
-from modulefinder import packagePathMap
-from urllib import response
 from dotenv import load_dotenv, find_dotenv
 import sys
 import os
 load_dotenv(find_dotenv())
 sys.path.insert(1, os.getenv('FILE'))
-from socket import MsgFlag
-import discord, asyncio
 from discord import app_commands
-from typing import Optional
 import discord
-from discord.utils import get
-import asyncio
 #import dining.sabai as sabai
 import datetime
 from dotenv import load_dotenv, find_dotenv
 import math
-import time
 import re
 import rec.rec as rec
-import directory
 import directory.directorysearch as directorysearch
-import directory.Person as Person
 import grades.Course as Course
 import grades.gradecalculations as gradecalculations
 from discord.app_commands import Choice
-from discord.ext import commands
 from discord.ui import Button
 
 global similarcourses
