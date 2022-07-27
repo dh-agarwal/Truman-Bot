@@ -1,3 +1,4 @@
+from modulefinder import packagePathMap
 from urllib import response
 from dotenv import load_dotenv, find_dotenv
 import sys
@@ -30,6 +31,8 @@ from discord.ui import Button
 global similarcourses
 global similarcoursesstrings
 global maincourse
+global page
+page = 0
 
 class MenuOne(discord.ui.View):
   def __init__(self):
@@ -138,7 +141,7 @@ class MenuOneTwoDrop(discord.ui.View):
     self.add_item(oneButton())
     self.add_item(twoButton())
     self.add_item(upButton())
-    self.add_item(leftButton())
+    self.add_item(leftButton(disabled=True))
     self.add_item(rightButton())
     await interaction.response.edit_message(view = self)
 
@@ -147,13 +150,6 @@ class MenuOneTwoDrop(discord.ui.View):
     self.add_item(oneButton())
     self.add_item(twoButton())
     self.add_item(upButton())
-    await interaction.response.edit_message(view = self)
-
-  async def switchtoclosed(self, interaction: discord.Interaction):
-    self.clear_items()
-    self.add_item(oneButton())
-    self.add_item(twoButton())
-    self.add_item(downButton())
     await interaction.response.edit_message(view = self)
 
   @discord.ui.button(emoji="1️⃣", style=discord.ButtonStyle.gray)
@@ -255,35 +251,145 @@ class MenuOneTwoDrop(discord.ui.View):
       await self.onepage(interaction)
     await interaction.edit_original_message(embed=newResult)
 
-class rightButton(Button):
+class MenuOneTwoDropAllEnabled(discord.ui.View):
   def __init__(self):
-    super().__init__(emoji="<:next_check:754948796361736213>", style=discord.ButtonStyle.green)
+    super().__init__()
+    self.value = None
 
-  async def callback(self, interaction):
-    await interaction.response.edit_message(content = "Clicked right")
-
-class leftButton(Button):
-  def __init__(self):
-    super().__init__(emoji="<:before_check:754948796487565332>", style=discord.ButtonStyle.green)
-
-  async def callback(self, interaction):
-    await interaction.response.edit_message(content = "Clicked left")
-
-class downButton(Button):
-  def __init__(self):
-    super().__init__(emoji="<:dropdownarrow:1001307846169870427>", style=discord.ButtonStyle.blurple)
-
-  async def callback(self, interaction):
-    await interaction.response.edit_message(content = "Clicked down")
-
-class upButton(Button):
-  def __init__(self):
-    super().__init__(emoji="<:upwardarrow:1001308391496503316>", style=discord.ButtonStyle.blurple)
-
-  async def callback(self, interaction):
+  @discord.ui.button(emoji="1️⃣", style=discord.ButtonStyle.gray)
+  async def onebut(self,interaction:discord.Interaction, button:discord.ui.Button):
     await interaction.response.defer()
-    global i
+    gradecalculations.generateCourseImage(similarcourses[1])
+
+    newResult = discord.Embed(
+      color=0xF59F16,
+      title = "**{} {}**".format(similarcourses[1].dept, similarcourses[1].number),
+    )
+
+    newResult.set_author(
+    name = 'MU Grades',
+    icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+    )
+
+    newResult.set_footer(
+      text="Queried by: {}\t\t\t\t\t*Data last updated on 7/10/2022".format(maincourse)
+    )
+
+    newResult.add_field(name="**Instructor**", value="{}".format(similarcourses[1].instructor.title()), inline=True)
+    newResult.add_field(name="**Section**", value="{}".format(similarcourses[1].section), inline=True)
+    newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(similarcourses[1]))), inline=True)
+
+    coursename = re.sub(r'[^a-zA-Z]', '', similarcourses[1].dept)
+    file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[1].number))
+    newResult.set_image(url="attachment://{}_{}.png".format(coursename, similarcourses[1].number))
+
+    await interaction.followup.send(file=file, embed=newResult)
+
+    oldResult = discord.Embed(
+      color=0xF59F16,
+      title = "**{} {}**".format(courses[0].dept, courses[0].number),
+    )
+
+    oldResult.set_author(
+    name = 'MU Grades',
+    icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+    )
+
+    txt = "Similar search results ({}):\t\t\t\t\t\t\t\t\t\t    Page 1/{}".format((len(similarcoursesstrings)), str(math.ceil(len(similarcoursesstrings)/10)))
     i = 0
+    emojidict = {
+      1: "1️⃣",
+      2: "2️⃣",
+    }
+
+    for similarcourse in similarcoursesstrings[:2]:
+      i += 1
+      txt += "\n{} {}".format(emojidict[i],similarcourse)
+    for similarcourse in similarcoursesstrings[2:10]:
+      i += 1
+      txt += "\n {}) {}".format(i,similarcourse)
+
+    oldResult.set_footer(text=txt)
+    oldResult.add_field(name="**Instructor**", value="{}".format(courses[0].instructor.title()), inline=True)
+    oldResult.add_field(name="**Section**", value="{}".format(courses[0].section), inline=True)
+    oldResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(courses[0]))), inline=True)
+
+    coursename = re.sub(r'[^a-zA-Z]', '', courses[0].dept)
+    oldResult.set_image(url="attachment://{}_{}.png".format(coursename, courses[0].number))
+    global page
+    page = 0
+    await interaction.edit_original_message(view=MenuOneTwoDropLeftDisabled(), embed=oldResult)
+
+  @discord.ui.button(emoji="2️⃣", style=discord.ButtonStyle.gray)
+  async def twobut(self,interaction:discord.Interaction, button:discord.ui.Button):
+    await interaction.response.defer()
+    gradecalculations.generateCourseImage(similarcourses[2])
+
+    newResult = discord.Embed(
+      color=0xF59F16,
+      title = "**{} {}**".format(similarcourses[2].dept, similarcourses[2].number),
+    )
+
+    newResult.set_author(
+    name = 'MU Grades',
+    icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+    )
+
+    newResult.set_footer(
+      text="Queried by: {}\t\t\t\t\t*Data last updated on 7/10/2022".format(maincourse)
+    )
+
+    newResult.add_field(name="**Instructor**", value="{}".format(similarcourses[2].instructor.title()), inline=True)
+    newResult.add_field(name="**Section**", value="{}".format(similarcourses[2].section), inline=True)
+    newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(similarcourses[2]))), inline=True)
+
+    coursename = re.sub(r'[^a-zA-Z]', '', similarcourses[2].dept)
+    file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[2].number))
+    newResult.set_image(url="attachment://{}_{}.png".format(coursename, similarcourses[2].number))
+
+    await interaction.followup.send(file=file, embed=newResult)
+
+    oldResult = discord.Embed(
+      color=0xF59F16,
+      title = "**{} {}**".format(courses[0].dept, courses[0].number),
+    )
+
+    oldResult.set_author(
+    name = 'MU Grades',
+    icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+    )
+
+    txt = "Similar search results ({}):\t\t\t\t\t\t\t\t\t\t    Page 1/{}".format((len(similarcoursesstrings)), str(math.ceil(len(similarcoursesstrings)/10)))
+    i = 0
+    emojidict = {
+      1: "1️⃣",
+      2: "2️⃣",
+    }
+
+    for similarcourse in similarcoursesstrings[:2]:
+      i += 1
+      txt += "\n{} {}".format(emojidict[i],similarcourse)
+    for similarcourse in similarcoursesstrings[2:10]:
+      i += 1
+      txt += "\n {}) {}".format(i,similarcourse)
+
+    oldResult.set_footer(text=txt)
+    oldResult.add_field(name="**Instructor**", value="{}".format(courses[0].instructor.title()), inline=True)
+    oldResult.add_field(name="**Section**", value="{}".format(courses[0].section), inline=True)
+    oldResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(courses[0]))), inline=True)
+
+    coursename = re.sub(r'[^a-zA-Z]', '', courses[0].dept)
+    oldResult.set_image(url="attachment://{}_{}.png".format(coursename, courses[0].number))
+    global page
+    page = 0
+    await interaction.edit_original_message(view=MenuOneTwoDropLeftDisabled(), embed=oldResult)
+
+
+  @discord.ui.button(emoji="<:upwardarrow:1001308391496503316>", style=discord.ButtonStyle.blurple)
+  async def uparrow(self,interaction:discord.Interaction, button:discord.ui.Button):
+    await interaction.response.defer()
+    global page
+    page = 0
     gradecalculations.generateCourseImage(courses[0])
     newResult = discord.Embed(
       color=0xF59F16,
@@ -317,9 +423,638 @@ class upButton(Button):
 
     coursename = re.sub(r'[^a-zA-Z]', '', courses[0].dept)
     newResult.set_image(url=f"attachment://{coursename}_{courses[0].number}.png")
-    newview = MenuOneTwoDrop()
-    await interaction.edit_original_message(view = newview, embed=newResult)
+    await interaction.edit_original_message(view = MenuOneTwoDrop(), embed=newResult)
 
+  @discord.ui.button(emoji="<:before_check:754948796487565332>", style=discord.ButtonStyle.green)
+  async def leftbut(self,interaction:discord.Interaction, button:discord.ui.Button):
+    await interaction.response.defer()
+    global page
+    if page > 0:
+      page -= 1
+      newResult = discord.Embed(
+        color=0xF59F16,
+        title = "**{} {}**".format(courses[0].dept, courses[0].number),
+      )
+
+      newResult.set_author(
+      name = 'MU Grades',
+      icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+      )
+
+      txt = "Similar search results ({}):\t\t\t\t\t\t\t\t\t\t    Page {}/{}".format((len(similarcoursesstrings)),page+1,str(math.ceil(len(similarcoursesstrings)/10)))
+      emojidict = {
+        1: "1️⃣",
+        2: "2️⃣",
+      }
+
+      if page == 0:
+        i = 0
+        for similarcourse in similarcoursesstrings[:2]:
+          i += 1
+          txt += "\n{} {}".format(emojidict[i],similarcourse)
+        for similarcourse in similarcoursesstrings[2:10]:
+          i += 1
+          txt += "\n {}) {}".format(i,similarcourse)
+      else:
+        i = page*10
+        for similarcourse in similarcoursesstrings[page*10:page*10+10]:
+          i += 1
+          txt += "\n {}) {}".format(i,similarcourse)
+
+      newResult.set_footer(text=txt)
+      newResult.add_field(name="**Instructor**", value="{}".format(courses[0].instructor.title()), inline=True)
+      newResult.add_field(name="**Section**", value="{}".format(courses[0].section), inline=True)
+      newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(courses[0]))), inline=True)
+
+      coursename = re.sub(r'[^a-zA-Z]', '', courses[0].dept)
+      newResult.set_image(url="attachment://{}_{}.png".format(coursename, courses[0].number))
+      if page == 0:
+        await interaction.edit_original_message(view = MenuOneTwoDropLeftDisabled(), embed=newResult)
+      else:
+        await interaction.edit_original_message(embed=newResult)
+
+  @discord.ui.button(emoji="<:next_check:754948796361736213>", style=discord.ButtonStyle.green)
+  async def rightbut(self,interaction:discord.Interaction, button:discord.ui.Button):
+    await interaction.response.defer()
+    global page
+    if page < len(similarcoursesstrings)/10 - 1:
+      page += 1
+      newResult = discord.Embed(
+        color=0xF59F16,
+        title = "**{} {}**".format(courses[0].dept, courses[0].number),
+      )
+
+      newResult.set_author(
+      name = 'MU Grades',
+      icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+      )
+
+      txt = "Similar search results ({}):\t\t\t\t\t\t\t\t\t\t    Page {}/{}".format((len(similarcoursesstrings)),page+1,str(math.ceil(len(similarcoursesstrings)/10)))
+      emojidict = {
+        1: "1️⃣",
+        2: "2️⃣",
+      }
+
+      if page == 0:
+        i = 0
+        for similarcourse in similarcoursesstrings[:2]:
+          i += 1
+          txt += "\n{} {}".format(emojidict[i],similarcourse)
+        for similarcourse in similarcoursesstrings[2:10]:
+          i += 1
+          txt += "\n {}) {}".format(i,similarcourse)
+      else:
+        i = page*10
+        for similarcourse in similarcoursesstrings[page*10:page*10+10]:
+          i += 1
+          txt += "\n {}) {}".format(i,similarcourse)
+
+      newResult.set_footer(text=txt)
+      newResult.add_field(name="**Instructor**", value="{}".format(courses[0].instructor.title()), inline=True)
+      newResult.add_field(name="**Section**", value="{}".format(courses[0].section), inline=True)
+      newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(courses[0]))), inline=True)
+
+      coursename = re.sub(r'[^a-zA-Z]', '', courses[0].dept)
+      newResult.set_image(url="attachment://{}_{}.png".format(coursename, courses[0].number))
+      if page == math.ceil(len(similarcoursesstrings)/10 - 1):
+        await interaction.edit_original_message(view = MenuOneTwoDropRightDisabled(), embed=newResult)
+      else:
+        await interaction.edit_original_message(view = MenuOneTwoDropAllEnabled(), embed=newResult)
+
+class MenuOneTwoDropRightDisabled(discord.ui.View):
+  def __init__(self):
+    super().__init__()
+    self.value = None
+
+  async def multiplepages(self, interaction: discord.Interaction):
+    self.clear_items()
+    self.add_item(oneButton())
+    self.add_item(twoButton())
+    self.add_item(upButton())
+    self.add_item(leftButton(disabled = False))
+    self.add_item(rightButton())
+    await interaction.response.edit_message(view = self)
+
+  @discord.ui.button(emoji="1️⃣", style=discord.ButtonStyle.gray)
+  async def onebut(self,interaction:discord.Interaction, button:discord.ui.Button):
+    await interaction.response.defer()
+    gradecalculations.generateCourseImage(similarcourses[1])
+
+    newResult = discord.Embed(
+      color=0xF59F16,
+      title = "**{} {}**".format(similarcourses[1].dept, similarcourses[1].number),
+    )
+
+    newResult.set_author(
+    name = 'MU Grades',
+    icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+    )
+
+    newResult.set_footer(
+      text="Queried by: {}\t\t\t\t\t*Data last updated on 7/10/2022".format(maincourse)
+    )
+
+    newResult.add_field(name="**Instructor**", value="{}".format(similarcourses[1].instructor.title()), inline=True)
+    newResult.add_field(name="**Section**", value="{}".format(similarcourses[1].section), inline=True)
+    newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(similarcourses[1]))), inline=True)
+
+    coursename = re.sub(r'[^a-zA-Z]', '', similarcourses[1].dept)
+    file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[1].number))
+    newResult.set_image(url="attachment://{}_{}.png".format(coursename, similarcourses[1].number))
+
+    await interaction.followup.send(file=file, embed=newResult)
+
+    oldResult = discord.Embed(
+    color=0xF59F16,
+    title = "**{} {}**".format(courses[0].dept, courses[0].number),
+    )
+
+    oldResult.set_author(
+    name = 'MU Grades',
+    icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+    )
+
+    txt = "Similar search results ({}):\t\t\t\t\t\t\t\t\t\t    Page 1/{}".format((len(similarcoursesstrings)), str(math.ceil(len(similarcoursesstrings)/10)))
+    i = 0
+    emojidict = {
+      1: "1️⃣",
+      2: "2️⃣",
+    }
+
+    for similarcourse in similarcoursesstrings[:2]:
+      i += 1
+      txt += "\n{} {}".format(emojidict[i],similarcourse)
+    for similarcourse in similarcoursesstrings[2:10]:
+      i += 1
+      txt += "\n {}) {}".format(i,similarcourse)
+
+    oldResult.set_footer(text=txt)
+    oldResult.add_field(name="**Instructor**", value="{}".format(courses[0].instructor.title()), inline=True)
+    oldResult.add_field(name="**Section**", value="{}".format(courses[0].section), inline=True)
+    oldResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(courses[0]))), inline=True)
+
+    coursename = re.sub(r'[^a-zA-Z]', '', courses[0].dept)
+    oldResult.set_image(url="attachment://{}_{}.png".format(coursename, courses[0].number))
+    global page
+    page = 0
+    await interaction.edit_original_message(view=MenuOneTwoDropLeftDisabled(), embed=oldResult)
+
+  @discord.ui.button(emoji="2️⃣", style=discord.ButtonStyle.gray)
+  async def twobut(self,interaction:discord.Interaction, button:discord.ui.Button):
+    await interaction.response.defer()
+    gradecalculations.generateCourseImage(similarcourses[2])
+
+    newResult = discord.Embed(
+      color=0xF59F16,
+      title = "**{} {}**".format(similarcourses[2].dept, similarcourses[2].number),
+    )
+
+    newResult.set_author(
+    name = 'MU Grades',
+    icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+    )
+
+    newResult.set_footer(
+      text="Queried by: {}\t\t\t\t\t*Data last updated on 7/10/2022".format(maincourse)
+    )
+
+    newResult.add_field(name="**Instructor**", value="{}".format(similarcourses[2].instructor.title()), inline=True)
+    newResult.add_field(name="**Section**", value="{}".format(similarcourses[2].section), inline=True)
+    newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(similarcourses[2]))), inline=True)
+
+    coursename = re.sub(r'[^a-zA-Z]', '', similarcourses[2].dept)
+    file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[2].number))
+    newResult.set_image(url="attachment://{}_{}.png".format(coursename, similarcourses[2].number))
+
+    await interaction.followup.send(file=file, embed=newResult)
+
+    oldResult = discord.Embed(
+      color=0xF59F16,
+      title = "**{} {}**".format(courses[0].dept, courses[0].number),
+    )
+
+    oldResult.set_author(
+    name = 'MU Grades',
+    icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+    )
+
+    txt = "Similar search results ({}):\t\t\t\t\t\t\t\t\t\t    Page 1/{}".format((len(similarcoursesstrings)), str(math.ceil(len(similarcoursesstrings)/10)))
+    i = 0
+    emojidict = {
+      1: "1️⃣",
+      2: "2️⃣",
+    }
+
+    for similarcourse in similarcoursesstrings[:2]:
+      i += 1
+      txt += "\n{} {}".format(emojidict[i],similarcourse)
+    for similarcourse in similarcoursesstrings[2:10]:
+      i += 1
+      txt += "\n {}) {}".format(i,similarcourse)
+
+    oldResult.set_footer(text=txt)
+    oldResult.add_field(name="**Instructor**", value="{}".format(courses[0].instructor.title()), inline=True)
+    oldResult.add_field(name="**Section**", value="{}".format(courses[0].section), inline=True)
+    oldResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(courses[0]))), inline=True)
+
+    coursename = re.sub(r'[^a-zA-Z]', '', courses[0].dept)
+    oldResult.set_image(url="attachment://{}_{}.png".format(coursename, courses[0].number))
+    global page
+    page = 0
+    await interaction.edit_original_message(view=MenuOneTwoDropLeftDisabled(), embed=oldResult)
+
+  @discord.ui.button(emoji="<:upwardarrow:1001308391496503316>", style=discord.ButtonStyle.blurple)
+  async def uparrow(self,interaction:discord.Interaction, button:discord.ui.Button):
+    await interaction.response.defer()
+    global page
+    page = 0
+    gradecalculations.generateCourseImage(courses[0])
+    newResult = discord.Embed(
+      color=0xF59F16,
+      title = f"**{courses[0].dept} {courses[0].number}**"
+    )
+
+    newResult.set_author(
+    name = 'MU Grades',
+    icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+    )
+
+    txt = f"Similar search results ({len(similarcoursesstrings)}):\t\t\t\t\t*Data last updated on 7/10/2022"
+
+    i = 0
+    emojidict = {
+      1: "1️⃣",
+      2: "2️⃣",
+    }
+
+    for similarcourse in similarcoursesstrings[:2]:
+      i += 1
+      txt += f"\n{emojidict[i]} {similarcourse}"
+
+    if len(similarcoursesstrings) > 2:
+      txt += "\n~~continued below~~"
+
+    newResult.set_footer(text=txt)
+    newResult.add_field(name="**Instructor**", value=f"{courses[0].instructor.title()}", inline=True)
+    newResult.add_field(name="**Section**", value=f"{courses[0].section}", inline=True)
+    newResult.add_field(name="**Total Students**", value=f"{str(Course.getTotalStudents(courses[0]))}", inline=True)
+
+    coursename = re.sub(r'[^a-zA-Z]', '', courses[0].dept)
+    newResult.set_image(url=f"attachment://{coursename}_{courses[0].number}.png")
+    await interaction.edit_original_message(view = MenuOneTwoDrop(), embed=newResult)
+
+  @discord.ui.button(emoji="<:before_check:754948796487565332>", style=discord.ButtonStyle.green)
+  async def leftbut(self,interaction:discord.Interaction, button:discord.ui.Button):
+    await interaction.response.defer()
+    global page
+    if page > 0:
+      page -= 1
+      newResult = discord.Embed(
+        color=0xF59F16,
+        title = "**{} {}**".format(courses[0].dept, courses[0].number),
+      )
+
+      newResult.set_author(
+      name = 'MU Grades',
+      icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+      )
+
+      txt = "Similar search results ({}):\t\t\t\t\t\t\t\t\t\t    Page {}/{}".format((len(similarcoursesstrings)),page+1,str(math.ceil(len(similarcoursesstrings)/10)))
+      emojidict = {
+        1: "1️⃣",
+        2: "2️⃣",
+      }
+
+      if page == 0:
+        i = 0
+        for similarcourse in similarcoursesstrings[:2]:
+          i += 1
+          txt += "\n{} {}".format(emojidict[i],similarcourse)
+        for similarcourse in similarcoursesstrings[2:10]:
+          i += 1
+          txt += "\n {}) {}".format(i,similarcourse)
+      else:
+        i = page*10
+        for similarcourse in similarcoursesstrings[page*10:page*10+10]:
+          i += 1
+          txt += "\n {}) {}".format(i,similarcourse)
+
+      newResult.set_footer(text=txt)
+      newResult.add_field(name="**Instructor**", value="{}".format(courses[0].instructor.title()), inline=True)
+      newResult.add_field(name="**Section**", value="{}".format(courses[0].section), inline=True)
+      newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(courses[0]))), inline=True)
+
+      coursename = re.sub(r'[^a-zA-Z]', '', courses[0].dept)
+      newResult.set_image(url="attachment://{}_{}.png".format(coursename, courses[0].number))
+      if page == 0:
+        await interaction.edit_original_message(view = MenuOneTwoDropLeftDisabled(), embed=newResult)
+      else:
+        await interaction.edit_original_message(view = MenuOneTwoDropAllEnabled(), embed=newResult)
+
+  @discord.ui.button(emoji="<:next_check:754948796361736213>", style=discord.ButtonStyle.green, disabled = True)
+  async def rightbut(self,interaction:discord.Interaction, button:discord.ui.Button):
+    await interaction.response.defer()
+
+class MenuOneTwoDropLeftDisabled(discord.ui.View):
+  def __init__(self):
+    super().__init__()
+    self.value = None
+
+  @discord.ui.button(emoji="1️⃣", style=discord.ButtonStyle.gray)
+  async def onebut(self,interaction:discord.Interaction, button:discord.ui.Button):
+    await interaction.response.defer()
+    gradecalculations.generateCourseImage(similarcourses[1])
+
+    newResult = discord.Embed(
+      color=0xF59F16,
+      title = "**{} {}**".format(similarcourses[1].dept, similarcourses[1].number),
+    )
+
+    newResult.set_author(
+    name = 'MU Grades',
+    icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+    )
+
+    newResult.set_footer(
+      text="Queried by: {}\t\t\t\t\t*Data last updated on 7/10/2022".format(maincourse)
+    )
+
+    newResult.add_field(name="**Instructor**", value="{}".format(similarcourses[1].instructor.title()), inline=True)
+    newResult.add_field(name="**Section**", value="{}".format(similarcourses[1].section), inline=True)
+    newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(similarcourses[1]))), inline=True)
+
+    coursename = re.sub(r'[^a-zA-Z]', '', similarcourses[1].dept)
+    file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[1].number))
+    newResult.set_image(url="attachment://{}_{}.png".format(coursename, similarcourses[1].number))
+
+    await interaction.followup.send(file=file, embed=newResult)
+
+  @discord.ui.button(emoji="2️⃣", style=discord.ButtonStyle.gray)
+  async def twobut(self,interaction:discord.Interaction, button:discord.ui.Button):
+    await interaction.response.defer()
+    gradecalculations.generateCourseImage(similarcourses[2])
+
+    newResult = discord.Embed(
+      color=0xF59F16,
+      title = "**{} {}**".format(similarcourses[2].dept, similarcourses[2].number),
+    )
+
+    newResult.set_author(
+    name = 'MU Grades',
+    icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+    )
+
+    newResult.set_footer(
+      text="Queried by: {}\t\t\t\t\t*Data last updated on 7/10/2022".format(maincourse)
+    )
+
+    newResult.add_field(name="**Instructor**", value="{}".format(similarcourses[2].instructor.title()), inline=True)
+    newResult.add_field(name="**Section**", value="{}".format(similarcourses[2].section), inline=True)
+    newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(similarcourses[2]))), inline=True)
+
+    coursename = re.sub(r'[^a-zA-Z]', '', similarcourses[2].dept)
+    file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[2].number))
+    newResult.set_image(url="attachment://{}_{}.png".format(coursename, similarcourses[2].number))
+
+    await interaction.followup.send(file=file, embed=newResult)
+
+  @discord.ui.button(emoji="<:upwardarrow:1001308391496503316>", style=discord.ButtonStyle.blurple)
+  async def uparrow(self,interaction:discord.Interaction, button:discord.ui.Button):
+    await interaction.response.defer()
+    global page
+    page = 0
+    gradecalculations.generateCourseImage(courses[0])
+    newResult = discord.Embed(
+      color=0xF59F16,
+      title = f"**{courses[0].dept} {courses[0].number}**"
+    )
+
+    newResult.set_author(
+    name = 'MU Grades',
+    icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+    )
+
+    txt = f"Similar search results ({len(similarcoursesstrings)}):\t\t\t\t\t*Data last updated on 7/10/2022"
+
+    i = 0
+    emojidict = {
+      1: "1️⃣",
+      2: "2️⃣",
+    }
+
+    for similarcourse in similarcoursesstrings[:2]:
+      i += 1
+      txt += f"\n{emojidict[i]} {similarcourse}"
+
+    if len(similarcoursesstrings) > 2:
+      txt += "\n~~continued below~~"
+
+    newResult.set_footer(text=txt)
+    newResult.add_field(name="**Instructor**", value=f"{courses[0].instructor.title()}", inline=True)
+    newResult.add_field(name="**Section**", value=f"{courses[0].section}", inline=True)
+    newResult.add_field(name="**Total Students**", value=f"{str(Course.getTotalStudents(courses[0]))}", inline=True)
+
+    coursename = re.sub(r'[^a-zA-Z]', '', courses[0].dept)
+    newResult.set_image(url=f"attachment://{coursename}_{courses[0].number}.png")
+    await interaction.edit_original_message(view = MenuOneTwoDrop(), embed=newResult)
+
+  @discord.ui.button(emoji="<:before_check:754948796487565332>", style=discord.ButtonStyle.green, disabled = True)
+  async def leftbut(self,interaction:discord.Interaction, button:discord.ui.Button):
+    await interaction.response.defer()
+
+  @discord.ui.button(emoji="<:next_check:754948796361736213>", style=discord.ButtonStyle.green)
+  async def rightbut(self,interaction:discord.Interaction, button:discord.ui.Button):
+    await interaction.response.defer()
+    global page
+    if page < len(similarcoursesstrings)/10 - 1:
+      page += 1
+      newResult = discord.Embed(
+        color=0xF59F16,
+        title = "**{} {}**".format(courses[0].dept, courses[0].number),
+      )
+
+      newResult.set_author(
+      name = 'MU Grades',
+      icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+      )
+
+      txt = "Similar search results ({}):\t\t\t\t\t\t\t\t\t\t    Page {}/{}".format((len(similarcoursesstrings)),page+1,str(math.ceil(len(similarcoursesstrings)/10)))
+      emojidict = {
+        1: "1️⃣",
+        2: "2️⃣",
+      }
+
+      if page == 0:
+        i = 0
+        for similarcourse in similarcoursesstrings[:2]:
+          i += 1
+          txt += "\n{} {}".format(emojidict[i],similarcourse)
+        for similarcourse in similarcoursesstrings[2:10]:
+          i += 1
+          txt += "\n {}) {}".format(i,similarcourse)
+      else:
+        i = page*10
+        for similarcourse in similarcoursesstrings[page*10:page*10+10]:
+          i += 1
+          txt += "\n {}) {}".format(i,similarcourse)
+
+      newResult.set_footer(text=txt)
+      newResult.add_field(name="**Instructor**", value="{}".format(courses[0].instructor.title()), inline=True)
+      newResult.add_field(name="**Section**", value="{}".format(courses[0].section), inline=True)
+      newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(courses[0]))), inline=True)
+
+      coursename = re.sub(r'[^a-zA-Z]', '', courses[0].dept)
+      newResult.set_image(url="attachment://{}_{}.png".format(coursename, courses[0].number))
+      if page == math.ceil(len(similarcoursesstrings)/10 - 1):
+        await interaction.edit_original_message(view = MenuOneTwoDropRightDisabled(), embed=newResult)
+      else:
+        await interaction.edit_original_message(view = MenuOneTwoDropAllEnabled(), embed=newResult)
+
+
+class rightButton(Button):
+  def __init__(self):
+    super().__init__(emoji="<:next_check:754948796361736213>", style=discord.ButtonStyle.green)
+
+  async def callback(self, interaction):
+    await interaction.response.defer()
+    global page
+    if page < len(similarcoursesstrings)/10 - 1:
+      page += 1
+      newResult = discord.Embed(
+        color=0xF59F16,
+        title = "**{} {}**".format(courses[0].dept, courses[0].number),
+      )
+
+      newResult.set_author(
+      name = 'MU Grades',
+      icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+      )
+
+      txt = "Similar search results ({}):\t\t\t\t\t\t\t\t\t\t    Page {}/{}".format((len(similarcoursesstrings)),page+1,str(math.ceil(len(similarcoursesstrings)/10)))
+      emojidict = {
+        1: "1️⃣",
+        2: "2️⃣",
+      }
+
+      if page == 0:
+        i = 0
+        for similarcourse in similarcoursesstrings[:2]:
+          i += 1
+          txt += "\n{} {}".format(emojidict[i],similarcourse)
+        for similarcourse in similarcoursesstrings[2:10]:
+          i += 1
+          txt += "\n {}) {}".format(i,similarcourse)
+      else:
+        i = page*10
+        for similarcourse in similarcoursesstrings[page*10:page*10+10]:
+          i += 1
+          txt += "\n {}) {}".format(i,similarcourse)
+
+      newResult.set_footer(text=txt)
+      newResult.add_field(name="**Instructor**", value="{}".format(courses[0].instructor.title()), inline=True)
+      newResult.add_field(name="**Section**", value="{}".format(courses[0].section), inline=True)
+      newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(courses[0]))), inline=True)
+
+      coursename = re.sub(r'[^a-zA-Z]', '', courses[0].dept)
+      newResult.set_image(url="attachment://{}_{}.png".format(coursename, courses[0].number))
+      if page == math.ceil(len(similarcoursesstrings)/10 - 1):
+        await interaction.edit_original_message(view = MenuOneTwoDropRightDisabled(), embed=newResult)
+      else:
+        await interaction.edit_original_message(view = MenuOneTwoDropAllEnabled(), embed=newResult)
+
+class leftButton(Button):
+  def __init__(self, disabled):
+    super().__init__(emoji="<:before_check:754948796487565332>", style=discord.ButtonStyle.green, disabled = disabled)
+
+  async def callback(self, interaction):
+    await interaction.response.defer()
+    global page
+    if page > 0:
+      page -= 1
+      newResult = discord.Embed(
+        color=0xF59F16,
+        title = "**{} {}**".format(courses[0].dept, courses[0].number),
+      )
+
+      newResult.set_author(
+      name = 'MU Grades',
+      icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+      )
+
+      txt = "Similar search results ({}):\t\t\t\t\t\t\t\t\t\t    Page {}/{}".format((len(similarcoursesstrings)),page+1,str(math.ceil(len(similarcoursesstrings)/10)))
+      emojidict = {
+        1: "1️⃣",
+        2: "2️⃣",
+      }
+
+      if page == 0:
+        i = 0
+        for similarcourse in similarcoursesstrings[:2]:
+          i += 1
+          txt += "\n{} {}".format(emojidict[i],similarcourse)
+        for similarcourse in similarcoursesstrings[2:10]:
+          i += 1
+          txt += "\n {}) {}".format(i,similarcourse)
+      else:
+        i = page*10
+        for similarcourse in similarcoursesstrings[page*10:page*10+10]:
+          i += 1
+          txt += "\n {}) {}".format(i,similarcourse)
+
+      newResult.set_footer(text=txt)
+      newResult.add_field(name="**Instructor**", value="{}".format(courses[0].instructor.title()), inline=True)
+      newResult.add_field(name="**Section**", value="{}".format(courses[0].section), inline=True)
+      newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(courses[0]))), inline=True)
+
+      coursename = re.sub(r'[^a-zA-Z]', '', courses[0].dept)
+      newResult.set_image(url="attachment://{}_{}.png".format(coursename, courses[0].number))
+      if page == 0:
+        await interaction.edit_original_message(view = MenuOneTwoDropLeftDisabled(), embed=newResult)
+      else:
+        await interaction.edit_original_message(embed=newResult)
+
+class upButton(Button):
+  def __init__(self):
+    super().__init__(emoji="<:upwardarrow:1001308391496503316>", style=discord.ButtonStyle.blurple)
+
+  async def callback(self, interaction):
+    await interaction.response.defer()
+    global page
+    page = 0
+    gradecalculations.generateCourseImage(courses[0])
+    newResult = discord.Embed(
+      color=0xF59F16,
+      title = f"**{courses[0].dept} {courses[0].number}**"
+    )
+
+    newResult.set_author(
+    name = 'MU Grades',
+    icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+    )
+
+    txt = f"Similar search results ({len(similarcoursesstrings)}):\t\t\t\t\t*Data last updated on 7/10/2022"
+
+    i = 0
+    emojidict = {
+      1: "1️⃣",
+      2: "2️⃣",
+    }
+
+    for similarcourse in similarcoursesstrings[:2]:
+      i += 1
+      txt += f"\n{emojidict[i]} {similarcourse}"
+
+    if len(similarcoursesstrings) > 2:
+      txt += "\n~~continued below~~"
+
+    newResult.set_footer(text=txt)
+    newResult.add_field(name="**Instructor**", value=f"{courses[0].instructor.title()}", inline=True)
+    newResult.add_field(name="**Section**", value=f"{courses[0].section}", inline=True)
+    newResult.add_field(name="**Total Students**", value=f"{str(Course.getTotalStudents(courses[0]))}", inline=True)
+
+    coursename = re.sub(r'[^a-zA-Z]', '', courses[0].dept)
+    newResult.set_image(url=f"attachment://{coursename}_{courses[0].number}.png")
+    await interaction.edit_original_message(view = MenuOneTwoDrop(), embed=newResult)
 
 class oneButton(Button):
   def __init__(self):
@@ -351,7 +1086,8 @@ class oneButton(Button):
     file = discord.File("grades/graph.png", filename="{}_{}.png".format(coursename, similarcourses[1].number))
     newResult.set_image(url="attachment://{}_{}.png".format(coursename, similarcourses[1].number))
 
-    await interaction.followup.send(file=file, embed=newResult)
+
+    await interaction.followup.send(file=file, embed=newResult)    
 
 class twoButton(Button):
   def __init__(self):
@@ -417,6 +1153,8 @@ async def courses(interaction: discord.Interaction, info: str = ""):
     courses = gradecalculations.getCourse(info)
 
     if (courses != []):
+      global page
+      page = 0
       global maincourse
       maincourse = f"{courses[0].dept} {courses[0].number}"
 
