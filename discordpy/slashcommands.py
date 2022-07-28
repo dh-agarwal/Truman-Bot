@@ -418,7 +418,7 @@ class MenuOneTwoDropAllEnabled(discord.ui.View):
       txt += f"\n{emojidict[i]} {similarcourse}"
 
     if len(aclient.similarcrsstrings[interaction.guild.id]) > 2:
-      txt += "\n~~continued below~~"
+      txt += "\n~~more below~~"
 
     newResult.set_footer(text=txt)
     newResult.add_field(name="**Instructor**", value=f"{aclient.courses[interaction.guild.id][0].instructor.title()}", inline=True)
@@ -696,7 +696,7 @@ class MenuOneTwoDropRightDisabled(discord.ui.View):
       txt += f"\n{emojidict[i]} {similarcourse}"
 
     if len(aclient.similarcrsstrings[interaction.guild.id]) > 2:
-      txt += "\n~~continued below~~"
+      txt += "\n~~more below~~"
 
     newResult.set_footer(text=txt)
     newResult.add_field(name="**Instructor**", value=f"{aclient.courses[interaction.guild.id][0].instructor.title()}", inline=True)
@@ -851,7 +851,7 @@ class MenuOneTwoDropLeftDisabled(discord.ui.View):
       txt += f"\n{emojidict[i]} {similarcourse}"
 
     if len(aclient.similarcrsstrings[interaction.guild.id]) > 2:
-      txt += "\n~~continued below~~"
+      txt += "\n~~more below~~"
 
     newResult.set_footer(text=txt)
     newResult.add_field(name="**Instructor**", value=f"{aclient.courses[interaction.guild.id][0].instructor.title()}", inline=True)
@@ -1049,7 +1049,7 @@ class upButton(Button):
       txt += f"\n{emojidict[i]} {similarcourse}"
 
     if len(aclient.similarcrsstrings[interaction.guild.id]) > 2:
-      txt += "\n~~continued below~~"
+      txt += "\n~~more below~~"
 
     newResult.set_footer(text=txt)
     newResult.add_field(name="**Instructor**", value=f"{aclient.courses[interaction.guild.id][0].instructor.title()}", inline=True)
@@ -1131,8 +1131,6 @@ class twoButton(Button):
 @app_commands.rename(info='search-query')
 @app_commands.describe(info='ex. CS 3050 2018 Spring Xu')
 async def courses(interaction: discord.Interaction, info: str = ""):
-    #print(interaction.guild.id)
-    #print(aclient.get_guild(984307692946460702))
     await interaction.response.defer()
 
     info = info.strip().split()
@@ -1175,7 +1173,7 @@ async def courses(interaction: discord.Interaction, info: str = ""):
         txt += f"\n{emojidict[i]} {similarcourse}"
 
       if len(aclient.similarcrsstrings[interaction.guild.id]) > 2:
-        txt += "\n~~continued below~~"
+        txt += "\n~~more below~~"
 
       embed.set_footer(text=txt)
       embed.add_field(name="**Instructor**", value=f"{aclient.courses[interaction.guild.id][0].instructor.title()}", inline=True)
