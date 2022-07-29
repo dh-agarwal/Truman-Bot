@@ -35,7 +35,7 @@ allhallstimes = {}
 
 for hall in halls:
     if hall in openhallstimesdict:
-        allhallstimes[hall] = openhallstimesdict[hall]
+        allhallstimes[hall] = openhallstimesdict[hall].replace("Breakfast", "").replace("Dinner", "").replace("Lunch", "")
     else:
         allhallstimes[hall] = "CLOSED"
 
