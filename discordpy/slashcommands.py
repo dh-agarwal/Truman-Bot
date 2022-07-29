@@ -16,6 +16,8 @@ import src.grades.Course as Course
 import src.grades.gradecalculations as gradecalculations
 from discord.app_commands import Choice
 from discord.ui import Button
+from src.dining.all import getAllDiningHallTimes as getAllDiningHallTimes
+from src.dining.all import getAllDiningHallTimesDay as getAllDiningHallTimesDay
 
 class client(discord.Client):
   def __init__(self):
@@ -1281,6 +1283,7 @@ async def personsearch(interaction: discord.Interaction, firstname: str = "", la
 @tree.command(name = "dining", description='Displays the menu and hours for the specified dining hall')
 @app_commands.describe(hall='Dining Hall')
 @app_commands.choices(hall = [
+    Choice(name = "All", value = "All"),
     Choice(name = "Sabai", value = "Sabai"),
     Choice(name = "Plaza 900 Dining", value = "Plaza 900 Dining"),
     Choice(name = "Baja Grill", value = "Baja Grill"),
@@ -1289,7 +1292,26 @@ async def personsearch(interaction: discord.Interaction, firstname: str = "", la
 ])
 async def dining(interaction: discord.Interaction, hall : str):
     await interaction.response.defer()
-    await interaction.followup.send(f"{hall}")
+    if (hall == "All"):
+      halls = getAllDiningHallTimes()
+      print(halls)
+      txt = f"Location\t{getAllDiningHallTimesDay()}\n"
+      for row in halls:
+        txt += f"{row}: {halls[row]}\n"
+      embed=discord.Embed(
+        title="All MU Dining Hall Hours",
+        url="https://dining.missouri.edu/locations/",
+        description=txt,
+        color=0xF59F16,
+    )
+
+    embed.set_author(
+      name = "MU Dining",
+      url="https://dining.missouri.edu/locations/",
+      icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+    )
+
+    await interaction.followup.send(embed=embed)
 
 #REC
 @tree.command(name = "rec", description='Displays hours for the Rec Facility this week')
