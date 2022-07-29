@@ -1130,9 +1130,9 @@ class twoButton(Button):
 
 #GRADES
 @tree.command(name = "courses", description='Searches and displays data for a specified course')
-@app_commands.rename(info='search-query')
+@app_commands.rename(info='search')
 @app_commands.describe(info='ex. CS 3050 2018 Spring Xu')
-async def courses(interaction: discord.Interaction, info: str = ""):
+async def courses(interaction: discord.Interaction, info: str):
     await interaction.response.defer()
 
     info = info.strip().split()
@@ -1283,7 +1283,8 @@ async def personsearch(interaction: discord.Interaction, firstname: str = "", la
 @tree.command(name = "dining", description='Displays the menu and hours for the specified dining hall')
 @app_commands.describe(hall='Dining Hall')
 @app_commands.choices(hall = [
-    Choice(name = "Hours", value = "Hours"),
+    Choice(name = "All Hours", value = "All Hours"),
+    Choice(name = "Open", value = "Open"),
     Choice(name = "Sabai", value = "Sabai"),
     Choice(name = "Plaza 900 Dining", value = "Plaza 900 Dining"),
     Choice(name = "Baja Grill", value = "Baja Grill"),
@@ -1292,30 +1293,43 @@ async def personsearch(interaction: discord.Interaction, firstname: str = "", la
 ])
 async def dining(interaction: discord.Interaction, hall : str):
     await interaction.response.defer()
-    if (hall == "Hours"):
-
+    if (hall == "All Hours"):
+      halls = getAllDiningHallTimes()
+      txt = ""
+      for dininghall in halls:
+        txt += f"""{"__**" if halls[dininghall] != "CLOSED" else ""}{dininghall}{"**" if halls[dininghall] != "CLOSED" else ""}: {halls[dininghall]}{"__" if halls[dininghall] != "CLOSED" else ""}\n\n"""
       embed=discord.Embed(
-        title="All MU Dining Hall Hours",
+        title="All MU Dining Hall Hours Today",
         url="https://dining.missouri.edu/locations/",
         color=0xF59F16,
+        description=txt,
         timestamp=interaction.created_at
-    )
-
-    embed.set_author(
+      )
+      embed.set_author(
       name = "MU Dining",
       url="https://dining.missouri.edu/locations/",
       icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
-    )
-
-    halls = getAllDiningHallTimes()
-    dininghalls = ""
-    dininghalltimes = ""
-    for dininghall in halls:
-      dininghalls += f"{dininghall}\n"
-      dininghalltimes += f"{halls[dininghall]}\n"
-
-    embed.add_field(name='**Dining Hall**', value=f'{dininghalls}',inline=True)
-    embed.add_field(name=f'**{getAllDiningHallTimesDay()}**', value=f'{dininghalltimes}',inline=True)
+      )
+      
+    elif (hall == "Open"):
+      halls = getAllDiningHallTimes()
+      txt = ""
+      for dininghall in halls:
+        if halls[dininghall] != "CLOSED":
+          txt += f"**{dininghall}**: {halls[dininghall]}\n\n"
+      embed=discord.Embed(
+        title="MU Dining Halls Open Today",
+        url="https://dining.missouri.edu/locations/",
+        color=0xF59F16,
+        description=txt,
+        timestamp=interaction.created_at
+      )
+      embed.set_author(
+        name = "MU Dining",
+        url="https://dining.missouri.edu/locations/",
+        icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+      )
+      
     await interaction.followup.send(embed=embed)
 
 #REC
