@@ -1,6 +1,7 @@
 from dotenv import load_dotenv, find_dotenv
 import sys
 import os
+
 load_dotenv(find_dotenv())
 sys.path.insert(1, os.getenv('FILE'))
 from discord import app_commands
@@ -16,8 +17,9 @@ import src.grades.Course as Course
 import src.grades.gradecalculations as gradecalculations
 from discord.app_commands import Choice
 from discord.ui import Button
-from src.dining.all import getAllDiningHallTimes as getAllDiningHallTimes
-from src.dining.all import getAllDiningHallTimesDay as getAllDiningHallTimesDay
+from src.dining.alldininghalls import getAllDiningHallTimes as getAllDiningHallTimes
+from src.dining.alldininghalls import getAllDiningHallTimesDay as getAllDiningHallTimesDay
+from src.dining.generalfunctions import *
 
 class client(discord.Client):
   def __init__(self):
@@ -1329,6 +1331,35 @@ async def dining(interaction: discord.Interaction, hall : str):
         url="https://dining.missouri.edu/locations/",
         icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
       )
+
+    elif (hall == "Baja Grill"):
+
+      embed=discord.Embed(
+      title="Baja Grill Menu",
+      url="https://dining.missouri.edu/locations/baja-grill/",
+      color=0xF59F16,
+      timestamp=interaction.created_at
+      )
+      embed.set_author(
+        name = "MU Dining",
+        url="https://dining.missouri.edu/locations/",
+        icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+      )
+      embed.set_thumbnail(
+        url="https://dining.missouri.edu/wp-content/uploads/sites/19/2019/05/BajaLogo-01.png"
+      )
+      times = getBajaTimesDict()
+      menu = getBajaMenu()
+      embed.add_field(name=list(times.keys())[0][:list(times.keys())[0].find(" ")], value=list(times.values())[0], inline = True)
+      embed.add_field(name=list(times.keys())[1][:list(times.keys())[1].find(" ")], value=list(times.values())[1], inline = True)
+      embed.add_field(name=list(times.keys())[2][:list(times.keys())[2].find(" ")], value=list(times.values())[2], inline = True)
+      embed.add_field(name="\u200b", value="**🍽️\tTODAYS MENU\t🍽️**", inline = False)
+      if list(times.values())[0] != "CLOSED":
+        for category in menu:
+          itemstxt = ""
+          for item in menu[category]:
+            itemstxt += f"• {item}\n"
+          embed.add_field(name=f"{category}", value=itemstxt, inline = False)
       
     await interaction.followup.send(embed=embed)
 
