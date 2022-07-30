@@ -1172,13 +1172,14 @@ async def personsearch(interaction: discord.Interaction, firstname: str = "", la
 @tree.command(name = "dining", description='Displays the menu and hours for the specified dining hall')
 @app_commands.describe(hall='Dining Hall')
 @app_commands.choices(hall = [
-    Choice(name = "All Hours", value = "All Hours"),
+    Choice(name = "All", value = "All"),
     Choice(name = "Open", value = "Open"),
     Choice(name = "Sabai", value = "Sabai"),
     Choice(name = "Plaza 900 Dining", value = "Plaza 900 Dining"),
     Choice(name = "Baja Grill", value = "Baja Grill"),
     Choice(name = "Sunshine Sushi", value = "Sunshine Sushi"),
-    Choice(name = "Wheatstone Bistro", value = "Wheatstone Bistro")
+    Choice(name = "Wheatstone Bistro", value = "Wheatstone Bistro"),
+    Choice(name = "Infusion", value = "Infusion")
 ])
 async def dining(interaction: discord.Interaction, hall : str):
     await interaction.response.defer()

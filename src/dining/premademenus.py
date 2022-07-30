@@ -1,15 +1,9 @@
-from bs4 import BeautifulSoup
-import requests
 import sys
 sys.path.insert(1,'src/dining')
 from timesdict import getTimesDict as getTimesDict
 
-URL = "https://dining.missouri.edu/locations/baja-grill/"
-
-timesDict = getTimesDict(URL)
-
 def getBajaTimesDict():
-    return timesDict
+    return getTimesDict("https://dining.missouri.edu/locations/baja-grill/")
 
 def getBajaMenu():
     return {
@@ -19,4 +13,13 @@ def getBajaMenu():
         "Dessert": ["Bananas and Chocolate Quesadilla", "Double Chocolate Chip Cookies"],
         "Beverages": ["Soft Drink"],
         "Value Meals": ["Tres Quesadillas", "Tres Tacos"]
+    }
+
+def getInfusionTimesDict():
+    return getTimesDict("https://dining.missouri.edu/locations/infusion/")
+
+def getInfusionMenu():
+    return {
+        "Customize: Hot Drink": ["Add a shot of espresso!", "Sub Soy Milk, Almond Milk, Half & Half, or Oat Milk", "Vanilla, Caramel, Sugar-free Vanilla and Chocolate"],
+        "Hot Drinks": ["Americano", "Cappuccino", "Caramel Latte", "Chai Latte", "Chocolate Chai", "Coffee", "Double Shot of Espresso", "Hot Chocolate", "Hot Tea Packet", "Latte", "Matcha", "Mocha", "Vanilla Latte"]
     }

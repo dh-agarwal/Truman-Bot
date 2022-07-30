@@ -181,7 +181,40 @@ def directorySearchEmbed(firstname, lastname):
 
 
 def getDiningEmbed(hall, interaction):
-    if (hall == "All Hours"):
+    
+    def getPremadeMenu(title, url, logo, timefunc, menufunc):
+      embed=discord.Embed(
+      title=title,
+      url=url,
+      color=0xF59F16,
+      timestamp=interaction.created_at
+      )
+      embed.set_author(
+        name = "MU Dining",
+        url="https://dining.missouri.edu/locations/",
+        icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+      )
+      embed.set_thumbnail(
+        url=logo
+      )
+      embed.set_footer(
+        text = "Menu subject to change"
+      )
+      times = timefunc
+      menu = menufunc
+      embed.add_field(name=list(times.keys())[0][:list(times.keys())[0].find(" ")], value=list(times.values())[0], inline = True)
+      embed.add_field(name=list(times.keys())[1][:list(times.keys())[1].find(" ")], value=list(times.values())[1], inline = True)
+      embed.add_field(name=list(times.keys())[2][:list(times.keys())[2].find(" ")], value=list(times.values())[2], inline = True)
+      embed.add_field(name="\u200b", value="**🍽️\tTODAYS MENU\t🍽️**", inline = False)
+      if list(times.values())[0] != "CLOSED":
+        for category in menu:
+          itemstxt = ""
+          for item in menu[category]:
+            itemstxt += f"• {item}\n"
+          embed.add_field(name=f"{category}", value=itemstxt, inline = False)
+      return embed    
+
+    if (hall == "All"):
       halls = getAllDiningHallTimes()
       txt = ""
       for dininghall in halls:
@@ -219,36 +252,9 @@ def getDiningEmbed(hall, interaction):
       )
 
     elif (hall == "Baja Grill"):
+      embed = getPremadeMenu("Baja Grill Menu", "https://dining.missouri.edu/locations/baja-grill/", "https://dining.missouri.edu/wp-content/uploads/sites/19/2019/05/BajaLogo-01.png", getBajaTimesDict(), getBajaMenu())
 
-      embed=discord.Embed(
-      title="Baja Grill Menu",
-      url="https://dining.missouri.edu/locations/baja-grill/",
-      color=0xF59F16,
-      timestamp=interaction.created_at
-      )
-      embed.set_author(
-        name = "MU Dining",
-        url="https://dining.missouri.edu/locations/",
-        icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
-      )
-      embed.set_thumbnail(
-        url="https://dining.missouri.edu/wp-content/uploads/sites/19/2019/05/BajaLogo-01.png"
-      )
-      embed.set_footer(
-        text = "Menu subject to change"
-      )
-      times = getBajaTimesDict()
-      menu = getBajaMenu()
-      embed.add_field(name="\u200b", value="**- SCHEDULE**", inline = False)
-      embed.add_field(name=list(times.keys())[0][:list(times.keys())[0].find(" ")], value=list(times.values())[0], inline = True)
-      embed.add_field(name=list(times.keys())[1][:list(times.keys())[1].find(" ")], value=list(times.values())[1], inline = True)
-      embed.add_field(name=list(times.keys())[2][:list(times.keys())[2].find(" ")], value=list(times.values())[2], inline = True)
-      embed.add_field(name="\u200b", value="**🍽️\tTODAYS MENU\t🍽️**", inline = False)
-      if list(times.values())[0] != "CLOSED":
-        for category in menu:
-          itemstxt = ""
-          for item in menu[category]:
-            itemstxt += f"• {item}\n"
-          embed.add_field(name=f"{category}", value=itemstxt, inline = False)
+    elif (hall == "Infusion"):
+      embed = getPremadeMenu("Infusion Menu", "https://dining.missouri.edu/locations/infusion/", "https://dining.missouri.edu/wp-content/uploads/sites/19/2019/05/Infusion-300x204.png", getInfusionTimesDict(), getInfusionMenu())  
 
     return embed
