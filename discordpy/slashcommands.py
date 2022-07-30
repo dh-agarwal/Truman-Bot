@@ -1178,12 +1178,32 @@ async def personsearch(interaction: discord.Interaction, firstname: str = "", la
 @app_commands.choices(hall = [
     Choice(name = "All", value = "All"),
     Choice(name = "Open", value = "Open"),
-    Choice(name = "Sabai", value = "Sabai"),
-    Choice(name = "Plaza 900 Dining", value = "Plaza 900 Dining"),
+    Choice(name = "1+5+3 Salads and Soups", value = "1+5+3 Salads and Soups"),
+    Choice(name = "1839 Kitchen", value = "1839 Kitchen"),
     Choice(name = "Baja Grill", value = "Baja Grill"),
+    Choice(name = "Bookmark Café", value = "Bookmark Café"),
+    Choice(name = "Catalyst Café", value = "Catalyst Café"),
+    Choice(name = "Do Mundo's", value = "Do Mundo's"),
+    Choice(name = "Emporium Café", value = "Emporium Café"),
+    Choice(name = "infusion", value = "infusion"),
+    Choice(name = "Legacy Grill", value = "Legacy Grill"),
+    Choice(name = "Mort's", value = "Mort's"),
+    Choice(name = "Olive & Oil", value = "Olive & Oil"),
+    Choice(name = "Panda Express", value = "Panda Express"),
+    Choice(name = "Plaza 900 Dining", value = "Plaza 900 Dining"),
+    Choice(name = "Potential Energy Café", value = "Potential Energy Café"),
+    Choice(name = "Pizza & MO", value = "Pizza & MO"),
+    Choice(name = "Breakfast & MO", value = "Breakfast & MO"),
+    Choice(name = "Sabai", value = "Sabai"),
+    Choice(name = "Starbucks - Memorial Union", value = "Starbucks - Memorial Union"),
+    Choice(name = "Starbucks - Southwest", value = "Starbucks - Southwest"),
+    Choice(name = "Subway - Hitt Street", value = "Subway - Hitt Street"),
+    Choice(name = "Subway - Southwest", value = "Subway - Southwest"),
     Choice(name = "Sunshine Sushi", value = "Sunshine Sushi"),
-    Choice(name = "Wheatstone Bistro", value = "Wheatstone Bistro"),
-    Choice(name = "Infusion", value = "Infusion")
+    Choice(name = "The MARK on 5th Street", value = "The MARK on 5th Street"),
+    Choice(name = "Tiger Avenue Deli", value = "Tiger Avenue Deli"),
+    Choice(name = "Truffles", value = "Truffles"),
+    Choice(name = "Wheatstone Bistro", value = "Wheatstone Bistro")
 ])
 async def dining(interaction: discord.Interaction, hall : str):
     await interaction.response.defer()

@@ -182,10 +182,11 @@ def directorySearchEmbed(firstname, lastname):
 
 def getDiningEmbed(hall, interaction):
     
-    def getPremadeMenu(url, logo, timefunc, menufunc):
+    def getPremadeMenu(data, timefunc, menufunc):
+      info = data
       embed=discord.Embed(
       title=hall,
-      url=url,
+      url=info[0],
       color=0xF59F16,
       timestamp=interaction.created_at
       )
@@ -195,10 +196,7 @@ def getDiningEmbed(hall, interaction):
         icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
       )
       embed.set_thumbnail(
-        url=logo
-      )
-      embed.set_footer(
-        text = "Menu subject to change"
+        url=info[1]
       )
       times = timefunc
       menu = menufunc
@@ -206,6 +204,9 @@ def getDiningEmbed(hall, interaction):
       embed.add_field(name=list(times.keys())[1][:list(times.keys())[1].find(" ")], value=list(times.values())[1], inline = True)
       embed.add_field(name=list(times.keys())[2][:list(times.keys())[2].find(" ")], value=list(times.values())[2], inline = True)
       if list(times.values())[0] != "Closed":
+        embed.set_footer(
+        text = "Menu subject to change"
+        )
         embed.add_field(name="\u200b", value="**🍽️\tTODAY'S MENU\t🍽️**", inline = False)
         for category in menu:
           itemstxt = ""
@@ -252,9 +253,9 @@ def getDiningEmbed(hall, interaction):
       )
 
     elif (hall == "Baja Grill"):
-      embed = getPremadeMenu("https://dining.missouri.edu/locations/baja-grill/", "https://dining.missouri.edu/wp-content/uploads/sites/19/2019/05/BajaLogo-01.png", getBajaTimesDict(), getBajaMenu())
+      embed = getPremadeMenu(getBajaInfo(), getBajaTimesDict(), getBajaMenu())
 
     elif (hall == "Infusion"):
-      embed = getPremadeMenu("https://dining.missouri.edu/locations/infusion/", "https://dining.missouri.edu/wp-content/uploads/sites/19/2019/05/Infusion-300x204.png", getInfusionTimesDict(), getInfusionMenu())  
+      embed = getPremadeMenu(getInfusionInfo(), getInfusionTimesDict(), getInfusionMenu())  
 
     return embed
