@@ -182,9 +182,9 @@ def directorySearchEmbed(firstname, lastname):
 
 def getDiningEmbed(hall, interaction):
     
-    def getPremadeMenu(title, url, logo, timefunc, menufunc):
+    def getPremadeMenu(url, logo, timefunc, menufunc):
       embed=discord.Embed(
-      title=title,
+      title=hall,
       url=url,
       color=0xF59F16,
       timestamp=interaction.created_at
@@ -205,8 +205,8 @@ def getDiningEmbed(hall, interaction):
       embed.add_field(name=list(times.keys())[0][:list(times.keys())[0].find(" ")], value=list(times.values())[0], inline = True)
       embed.add_field(name=list(times.keys())[1][:list(times.keys())[1].find(" ")], value=list(times.values())[1], inline = True)
       embed.add_field(name=list(times.keys())[2][:list(times.keys())[2].find(" ")], value=list(times.values())[2], inline = True)
-      embed.add_field(name="\u200b", value="**🍽️\tTODAYS MENU\t🍽️**", inline = False)
-      if list(times.values())[0] != "CLOSED":
+      if list(times.values())[0] != "Closed":
+        embed.add_field(name="\u200b", value="**🍽️\tTODAY'S MENU\t🍽️**", inline = False)
         for category in menu:
           itemstxt = ""
           for item in menu[category]:
@@ -252,9 +252,9 @@ def getDiningEmbed(hall, interaction):
       )
 
     elif (hall == "Baja Grill"):
-      embed = getPremadeMenu("Baja Grill Menu", "https://dining.missouri.edu/locations/baja-grill/", "https://dining.missouri.edu/wp-content/uploads/sites/19/2019/05/BajaLogo-01.png", getBajaTimesDict(), getBajaMenu())
+      embed = getPremadeMenu("https://dining.missouri.edu/locations/baja-grill/", "https://dining.missouri.edu/wp-content/uploads/sites/19/2019/05/BajaLogo-01.png", getBajaTimesDict(), getBajaMenu())
 
     elif (hall == "Infusion"):
-      embed = getPremadeMenu("Infusion Menu", "https://dining.missouri.edu/locations/infusion/", "https://dining.missouri.edu/wp-content/uploads/sites/19/2019/05/Infusion-300x204.png", getInfusionTimesDict(), getInfusionMenu())  
+      embed = getPremadeMenu("https://dining.missouri.edu/locations/infusion/", "https://dining.missouri.edu/wp-content/uploads/sites/19/2019/05/Infusion-300x204.png", getInfusionTimesDict(), getInfusionMenu())  
 
     return embed
