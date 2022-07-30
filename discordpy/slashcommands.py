@@ -1130,11 +1130,13 @@ async def rechours(interaction: discord.Interaction):
     await interaction.response.defer()
     await interaction.followup.send(embed=getRecHoursEmbed(interaction))
 
+
 #COVID
 @tree.command(name = "covid", description='Displays information regarding Covid-19 in Mizzou')
 async def covidinfo(interaction: discord.Interaction):
     await interaction.response.defer()
     await interaction.followup.send(embed=getCovidEmbed(interaction))
+
 
 #GIF COMMANDS
 @tree.command(name = "dance", description='Posts a GIF of Truman dancing')
@@ -1157,6 +1159,7 @@ async def clap(interaction: discord.Interaction):
     await interaction.response.defer()
     await interaction.followup.send(embed=getGifEmbed("clap", interaction))
 
+
 #DIRECTORY
 @tree.command(name = "directory", description='Searches the directory for the specified student')
 @app_commands.rename(firstname='first-name', lastname='last-name')
@@ -1167,6 +1170,7 @@ async def clap(interaction: discord.Interaction):
 async def personsearch(interaction: discord.Interaction, firstname: str = "", lastname: str = ""):
     await interaction.response.defer()
     await interaction.followup.send(embed=directorySearchEmbed(firstname, lastname))
+
 
 #DINING
 @tree.command(name = "dining", description='Displays the menu and hours for the specified dining hall')
@@ -1184,6 +1188,7 @@ async def personsearch(interaction: discord.Interaction, firstname: str = "", la
 async def dining(interaction: discord.Interaction, hall : str):
     await interaction.response.defer()
     await interaction.followup.send(embed=getDiningEmbed(hall, interaction))
+
 
 #GRADES
 @tree.command(name = "courses", description='Searches and displays data for a specified course')
