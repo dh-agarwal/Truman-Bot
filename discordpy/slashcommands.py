@@ -1173,11 +1173,9 @@ async def personsearch(interaction: discord.Interaction, firstname: str = "", la
 
 
 #DINING
-@tree.command(name = "dining", description='Displays the menu and hours for the specified dining hall')
+@tree.command(name = "menus", description='Displays the menu and hours for the specified dining hall')
 @app_commands.describe(hall='Dining Hall')
 @app_commands.choices(hall = [
-    Choice(name = "All", value = "All"),
-    Choice(name = "Open", value = "Open"),
     Choice(name = "1+5+3 Salads and Soups", value = "1+5+3 Salads and Soups"),
     Choice(name = "1839 Kitchen", value = "1839 Kitchen"),
     Choice(name = "Baja Grill", value = "Baja Grill"),
@@ -1195,19 +1193,26 @@ async def personsearch(interaction: discord.Interaction, firstname: str = "", la
     Choice(name = "Pizza & MO", value = "Pizza & MO"),
     Choice(name = "Breakfast & MO", value = "Breakfast & MO"),
     Choice(name = "Sabai", value = "Sabai"),
-    Choice(name = "Starbucks - Memorial Union", value = "Starbucks - Memorial Union"),
-    Choice(name = "Starbucks - Southwest", value = "Starbucks - Southwest"),
-    Choice(name = "Subway - Hitt Street", value = "Subway - Hitt Street"),
-    Choice(name = "Subway - Southwest", value = "Subway - Southwest"),
+    Choice(name = "Starbucks", value = "Starbucks"),
+    Choice(name = "Subway", value = "Subway"),
     Choice(name = "Sunshine Sushi", value = "Sunshine Sushi"),
     Choice(name = "The MARK on 5th Street", value = "The MARK on 5th Street"),
     Choice(name = "Tiger Avenue Deli", value = "Tiger Avenue Deli"),
     Choice(name = "Truffles", value = "Truffles"),
     Choice(name = "Wheatstone Bistro", value = "Wheatstone Bistro")
 ])
-async def dining(interaction: discord.Interaction, hall : str):
+async def menu(interaction: discord.Interaction, hall : str):
     await interaction.response.defer()
-    await interaction.followup.send(embed=getDiningEmbed(hall, interaction))
+    await interaction.followup.send(embed=getMenuEmbed(hall, interaction))
+
+@tree.command(name = "dining", description='Displays open hours for dining halls')
+@app_commands.choices(choice = [
+    Choice(name = "All", value = "All"),
+    Choice(name = "Open", value = "Open"),
+])
+async def dining(interaction: discord.Interaction, choice : str):
+    await interaction.response.defer()
+    await interaction.followup.send(embed=getDiningEmbed(choice, interaction))
 
 
 #GRADES
