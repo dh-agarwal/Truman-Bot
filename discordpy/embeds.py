@@ -12,7 +12,6 @@ from dotenv import load_dotenv, find_dotenv
 import src.rec.rec as rec
 from src.dining.alldininghalls import getAllDiningHallTimes as getAllDiningHallTimes
 from src.dining.alldininghalls import getAllDiningHallTimesDay as getAllDiningHallTimesDay
-from src.dining.generalfunctions import *
 from src.dining.premademenus import DiningHall as DiningHall
 
 def getGifEmbed(dance, interaction):
@@ -181,7 +180,6 @@ def directorySearchEmbed(firstname, lastname):
         return embed
 
 def getMenuEmbed(hall, interaction):
-    
     hallobj = DiningHall(hall)
     embed=discord.Embed(
     title=hall,
@@ -237,11 +235,13 @@ def getDiningEmbed(choice, interaction):
     elif (choice == "Open"):
       halls = getAllDiningHallTimes()
       txt = ""
+      open = 0
       for dininghall in halls:
         if halls[dininghall] != "CLOSED":
+          open += 1
           txt += f"**{dininghall}**: {halls[dininghall]}\n\n"
       embed=discord.Embed(
-        title="MU Dining Halls Open Today",
+        title=f"MU Dining Halls Open Today ({open})",
         url="https://dining.missouri.edu/locations/",
         color=0xF59F16,
         description=txt,
