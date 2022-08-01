@@ -12,7 +12,7 @@ from dotenv import load_dotenv, find_dotenv
 import src.rec.rec as rec
 from src.dining.alldininghalls import getAllDiningHallTimes as getAllDiningHallTimes
 from src.dining.alldininghalls import getAllDiningHallTimesDay as getAllDiningHallTimesDay
-from src.dining.premademenus import DiningHall as DiningHall
+from src.dining.menus import DiningHall as DiningHall
 
 def getGifEmbed(dance, interaction):
     actions = {
@@ -114,7 +114,6 @@ def getRecHoursEmbed(interaction):
     )
 
     return embed
-
 
 def directorySearchEmbed(firstname, lastname):
     if not firstname and not lastname:

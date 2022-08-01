@@ -68,7 +68,7 @@ def getMenuDict(URL):
                     menudict[txt1] = foodlist
     return menudict
     
-infoDict = {
+hallInfoDict = {
     "1+5+3 Salads and Soups": ["https://dining.missouri.edu/locations/153-salads-and-soups/", "https://dining.missouri.edu/wp-content/uploads/sites/19/2019/05/153-logo-e1615579713594.jpg"],
     "1839 Kitchen": ["https://dining.missouri.edu/locations/1839-kitchen/", "https://dining.missouri.edu/wp-content/uploads/sites/19/2019/05/1839-768x668.jpg"],
     "Baja Grill": ["https://dining.missouri.edu/locations/baja-grill/", "https://dining.missouri.edu/wp-content/uploads/sites/19/2019/05/BajaLogo-01.png"],
@@ -98,7 +98,7 @@ infoDict = {
 class DiningHall:
     def __init__(self, name):
         self.name = name
-        self.url = infoDict[name][0]
-        self.logo = infoDict[name][1]
-        self.menu = getMenuDict(infoDict[name][0])
-        self.times = getTimesDict(infoDict[name][0])
+        self.url = hallInfoDict[name][0]
+        self.logo = hallInfoDict[name][1]
+        self.menu = getMenuDict(hallInfoDict[name][0])
+        self.times = getTimesDict(hallInfoDict[name][0])
