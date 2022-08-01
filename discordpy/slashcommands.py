@@ -1187,11 +1187,11 @@ async def personsearch(interaction: discord.Interaction, firstname: str = "", la
     Choice(name = "Legacy Grill", value = "Legacy Grill"),
     Choice(name = "Mort's", value = "Mort's"),
     Choice(name = "Olive & Oil", value = "Olive & Oil"),
-    Choice(name = "Panda Express", value = "Panda Express"),
+    #Choice(name = "Panda Express", value = "Panda Express"),
     Choice(name = "Plaza 900 Dining", value = "Plaza 900 Dining"),
     Choice(name = "Potential Energy Café", value = "Potential Energy Café"),
-    Choice(name = "Pizza & MO", value = "Pizza & MO"),
-    Choice(name = "Breakfast & MO", value = "Breakfast & MO"),
+    #Choice(name = "Pizza & MO", value = "Pizza & MO"),
+    #Choice(name = "Breakfast & MO", value = "Breakfast & MO"),
     Choice(name = "Sabai", value = "Sabai"),
     Choice(name = "Starbucks", value = "Starbucks"),
     Choice(name = "Subway", value = "Subway"),
@@ -1206,6 +1206,7 @@ async def menu(interaction: discord.Interaction, hall : str):
     await interaction.followup.send(embed=getMenuEmbed(hall, interaction))
 
 @tree.command(name = "dining", description='Displays open hours for dining halls')
+@app_commands.describe(choice='Displays open hours for dining halls')
 @app_commands.choices(choice = [
     Choice(name = "All", value = "All"),
     Choice(name = "Open", value = "Open"),
