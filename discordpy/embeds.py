@@ -115,6 +115,7 @@ def getRecHoursEmbed(interaction):
 
     return embed
 
+
 def directorySearchEmbed(firstname, lastname):
     if not firstname and not lastname:
         embed=discord.Embed(
@@ -186,7 +187,8 @@ def directorySearchEmbed(firstname, lastname):
                 embed.add_field(name="City/State", value=f"{p1.city}, {p1.state}", inline=True)
         return embed
 
-def getMenuEmbed(hall, interaction):
+
+def getMenuEmbed(hall, interaction, expanded):
     hallobj = DiningHall(hall)
     embed=discord.Embed(
     title=hall,
@@ -207,17 +209,18 @@ def getMenuEmbed(hall, interaction):
     embed.add_field(name=list(times.keys())[0][:list(times.keys())[0].find(" ")], value=list(times.values())[0], inline = True)
     embed.add_field(name=list(times.keys())[1][:list(times.keys())[1].find(" ")], value=list(times.values())[1], inline = True)
     embed.add_field(name=list(times.keys())[2][:list(times.keys())[2].find(" ")], value=list(times.values())[2], inline = True)
-    #if list(times.values())[0] != "Closed":
-    embed.set_footer(
-    text = "Menu subject to change"
-    )
-    embed.add_field(name="\u200b", value="**🍽️\tTODAY'S MENU\t🍽️**", inline = False)
-    for category in menu:
-      itemstxt = ""
-      for item in menu[category]:
-        itemstxt += f"• {item}\n"
-      embed.add_field(name=f"{category}", value=itemstxt, inline = False)
-    return embed    
+    if expanded:
+      embed.set_footer(
+      text = "Menu subject to change"
+      )
+      embed.add_field(name="\u200b", value="**🍽️\tTODAY'S MENU\t🍽️**", inline = False)
+      for category in menu:
+        itemstxt = ""
+        for item in menu[category]:
+          itemstxt += f"• {item}\n"
+        embed.add_field(name=f"{category}", value=itemstxt, inline = False)
+    return embed  
+
 
 def getDiningEmbed(choice, interaction):
 

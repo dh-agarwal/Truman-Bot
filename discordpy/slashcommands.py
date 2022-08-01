@@ -14,6 +14,7 @@ import src.grades.gradecalculations as gradecalculations
 from discord.app_commands import Choice
 from discord.ui import Button
 from embeds import *
+from src.dining.menus import DiningHall as DiningHall
 
 class client(discord.Client):
   def __init__(self):
@@ -34,8 +35,10 @@ aclient.page = {}
 aclient.similarcourses = {}
 aclient.similarcrsstrings = {}
 aclient.courses = {}
+aclient.hall = {}
 
 
+#COURSESMENUS
 class MenuOne(discord.ui.View):
   def __init__(self):
     super().__init__()
@@ -913,6 +916,29 @@ class MenuOneTwoDropLeftDisabled(discord.ui.View):
         await interaction.edit_original_message(view = MenuOneTwoDropAllEnabled(), embed=newResult)
 
 
+#DININGMENUS
+class ShowMenu(discord.ui.View):
+  def __init__(self):
+    super().__init__()
+    self.value = None
+
+  @discord.ui.button(label="Show Menu", emoji="<:dropdownarrow:1001307846169870427>", style=discord.ButtonStyle.blurple)
+  async def showmenu(self,interaction:discord.Interaction, button:discord.ui.Button):
+    await interaction.response.defer()
+    await interaction.followup.send(view=HideMenu(), embed=getMenuEmbed(aclient.hall[interaction.guild.id], interaction, True))
+
+class HideMenu(discord.ui.View):
+  def __init__(self):
+    super().__init__()
+    self.value = None
+
+  @discord.ui.button(label="Hide Menu", emoji="<:upwardarrow:1001308391496503316>", style=discord.ButtonStyle.blurple)
+  async def showmenu(self,interaction:discord.Interaction, button:discord.ui.Button):
+    await interaction.response.defer()
+    await interaction.followup.send(view=ShowMenu(), embed=getMenuEmbed(aclient.hall[interaction.guild.id], interaction, False))
+
+
+#COURSESBUTTONS
 class rightButton(Button):
   def __init__(self):
     super().__init__(emoji="<:next_check:754948796361736213>", style=discord.ButtonStyle.green)
@@ -1124,6 +1150,7 @@ class twoButton(Button):
     await interaction.followup.send(file=file, embed=newResult)
 
 
+
 #REC
 @tree.command(name = "rec", description='Displays hours for the Rec Facility this week')
 async def rechours(interaction: discord.Interaction):
@@ -1203,7 +1230,8 @@ async def personsearch(interaction: discord.Interaction, firstname: str = "", la
 ])
 async def menu(interaction: discord.Interaction, hall : str):
     await interaction.response.defer()
-    await interaction.followup.send(embed=getMenuEmbed(hall, interaction))
+    aclient.hall[interaction.guild.id] = hall
+    await interaction.followup.send(view=ShowMenu(), embed=getMenuEmbed(aclient.hall[interaction.guild.id], interaction, False))
 
 @tree.command(name = "dining", description='Displays open hours for dining halls')
 @app_commands.describe(choice='Displays open hours for dining halls')
