@@ -105,6 +105,14 @@ def getRecHoursEmbed(interaction):
       text=f"Schedule for {rec.getWeek()}"
     )
 
+    embed.set_footer(
+      text=f"Schedule for {rec.getWeek()}"
+    )
+
+    embed.set_thumbnail(
+      url="https://mizzourec.com/wp-content/themes/mizzourec/images/default-mizzourec-smrectcrop.png"
+    )
+
     return embed
 
 
@@ -200,16 +208,16 @@ def getMenuEmbed(hall, interaction):
     embed.add_field(name=list(times.keys())[0][:list(times.keys())[0].find(" ")], value=list(times.values())[0], inline = True)
     embed.add_field(name=list(times.keys())[1][:list(times.keys())[1].find(" ")], value=list(times.values())[1], inline = True)
     embed.add_field(name=list(times.keys())[2][:list(times.keys())[2].find(" ")], value=list(times.values())[2], inline = True)
-    if list(times.values())[0] != "Closed":
-      embed.set_footer(
-      text = "Menu subject to change"
-      )
-      embed.add_field(name="\u200b", value="**🍽️\tTODAY'S MENU\t🍽️**", inline = False)
-      for category in menu:
-        itemstxt = ""
-        for item in menu[category]:
-          itemstxt += f"• {item}\n"
-        embed.add_field(name=f"{category}", value=itemstxt, inline = False)
+    #if list(times.values())[0] != "Closed":
+    embed.set_footer(
+    text = "Menu subject to change"
+    )
+    embed.add_field(name="\u200b", value="**🍽️\tTODAY'S MENU\t🍽️**", inline = False)
+    for category in menu:
+      itemstxt = ""
+      for item in menu[category]:
+        itemstxt += f"• {item}\n"
+      embed.add_field(name=f"{category}", value=itemstxt, inline = False)
     return embed    
 
 def getDiningEmbed(choice, interaction):
