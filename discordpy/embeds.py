@@ -1,7 +1,6 @@
 from dotenv import load_dotenv, find_dotenv
 import sys
 import os
-
 load_dotenv(find_dotenv())
 sys.path.insert(1, os.getenv('FILE'))
 import discord
@@ -13,6 +12,191 @@ import src.rec.rec as rec
 from src.dining.alldininghalls import getAllDiningHallTimes as getAllDiningHallTimes
 from src.dining.alldininghalls import getAllDiningHallTimesDay as getAllDiningHallTimesDay
 from src.dining.menus import DiningHall as DiningHall
+import src.grades.Course as Course
+import src.grades.gradecalculations as gradecalculations
+import re
+import math
+
+
+def renderCourse(interaction, coursenum, aclient):
+    gradecalculations.generateCourseImage(aclient.similarcourses[interaction.guild.id][coursenum])
+
+    newResult = discord.Embed(
+      color=0xF59F16,
+      title = "**{} {}**".format(aclient.similarcourses[interaction.guild.id][coursenum].dept, aclient.similarcourses[interaction.guild.id][coursenum].number),
+    )
+
+    newResult.set_author(
+    name = 'MU Grades',
+    icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+    )
+
+    newResult.set_footer(
+      text="Queried by: {}\t\t\t\t\t*Data last updated on 7/10/2022".format(aclient.maincourse[interaction.guild.id])
+    )
+
+    newResult.add_field(name="**Instructor**", value="{}".format(aclient.similarcourses[interaction.guild.id][coursenum].instructor.title()), inline=True)
+    newResult.add_field(name="**Section**", value="{}".format(aclient.similarcourses[interaction.guild.id][coursenum].section), inline=True)
+    newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(aclient.similarcourses[interaction.guild.id][coursenum]))), inline=True)
+
+    coursename = re.sub(r'[^a-zA-Z]', '', aclient.similarcourses[interaction.guild.id][coursenum].dept)
+    file = discord.File("src/grades/graph.png", filename="{}_{}.png".format(coursename, aclient.similarcourses[interaction.guild.id][coursenum].number))
+    newResult.set_image(url="attachment://{}_{}.png".format(coursename, aclient.similarcourses[interaction.guild.id][coursenum].number))
+
+    return {"embed": newResult, "file": file}
+
+
+def minimizeCourse(interaction, aclient):
+    gradecalculations.generateCourseImage(aclient.courses[interaction.guild.id][0])
+    newResult = discord.Embed(
+      color=0xF59F16,
+      title = f"**{aclient.courses[interaction.guild.id][0].dept} {aclient.courses[interaction.guild.id][0].number}**"
+    )
+
+    newResult.set_author(
+    name = 'MU Grades',
+    icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+    )
+
+    txt = f"Similar search results ({len(aclient.similarcrsstrings[interaction.guild.id])}):\t\t\t\t\t*Data last updated on 7/10/2022"
+
+    i = 0
+    emojidict = {
+      1: "1️⃣",
+      2: "2️⃣",
+    }
+
+    for similarcourse in aclient.similarcrsstrings[interaction.guild.id][:2]:
+      i += 1
+      txt += f"\n{emojidict[i]} {similarcourse}"
+
+    if len(aclient.similarcrsstrings[interaction.guild.id]) > 2:
+      txt += "\n~~more below~~"
+
+    newResult.set_footer(text=txt)
+    newResult.add_field(name="**Instructor**", value=f"{aclient.courses[interaction.guild.id][0].instructor.title()}", inline=True)
+    newResult.add_field(name="**Section**", value=f"{aclient.courses[interaction.guild.id][0].section}", inline=True)
+    newResult.add_field(name="**Total Students**", value=f"{str(Course.getTotalStudents(aclient.courses[interaction.guild.id][0]))}", inline=True)
+
+    coursename = re.sub(r'[^a-zA-Z]', '', aclient.courses[interaction.guild.id][0].dept)
+    newResult.set_image(url=f"attachment://{coursename}_{aclient.courses[interaction.guild.id][0].number}.png")
+
+    return newResult
+
+
+def movePage(interaction, aclient):
+    newResult = discord.Embed(
+      color=0xF59F16,
+      title = "**{} {}**".format(aclient.courses[interaction.guild.id][0].dept, aclient.courses[interaction.guild.id][0].number),
+    )
+
+    newResult.set_author(
+    name = 'MU Grades',
+    icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+    )
+
+    txt = "Similar search results ({}):\t\t\t\t\t\t\t\t\t\t    Page {}/{}".format((len(aclient.similarcrsstrings[interaction.guild.id])),aclient.page[interaction.guild.id]+1,str(math.ceil(len(aclient.similarcrsstrings[interaction.guild.id])/10)))
+    emojidict = {
+      1: "1️⃣",
+      2: "2️⃣",
+    }
+
+    if aclient.page[interaction.guild.id] == 0:
+      i = 0
+      for similarcourse in aclient.similarcrsstrings[interaction.guild.id][:2]:
+        i += 1
+        txt += "\n{} {}".format(emojidict[i],similarcourse)
+      for similarcourse in aclient.similarcrsstrings[interaction.guild.id][2:10]:
+        i += 1
+        txt += "\n {}) {}".format(i,similarcourse)
+    else:
+      i = aclient.page[interaction.guild.id]*10
+      for similarcourse in aclient.similarcrsstrings[interaction.guild.id][aclient.page[interaction.guild.id]*10:aclient.page[interaction.guild.id]*10+10]:
+        i += 1
+        txt += "\n {}) {}".format(i,similarcourse)
+
+    newResult.set_footer(text=txt)
+    newResult.add_field(name="**Instructor**", value="{}".format(aclient.courses[interaction.guild.id][0].instructor.title()), inline=True)
+    newResult.add_field(name="**Section**", value="{}".format(aclient.courses[interaction.guild.id][0].section), inline=True)
+    newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(aclient.courses[interaction.guild.id][0]))), inline=True)
+
+    coursename = re.sub(r'[^a-zA-Z]', '', aclient.courses[interaction.guild.id][0].dept)
+    newResult.set_image(url="attachment://{}_{}.png".format(coursename, aclient.courses[interaction.guild.id][0].number))
+
+    return newResult
+
+
+def expandCourse(interaction, aclient):
+    newResult = discord.Embed(
+    color=0xF59F16,
+    title = "**{} {}**".format(aclient.courses[interaction.guild.id][0].dept, aclient.courses[interaction.guild.id][0].number),
+    )
+
+    newResult.set_author(
+    name = 'MU Grades',
+    icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+    )
+
+    txt = "Similar search results ({}):\t\t\t\t\t\t\t\t\t\t    Page 1/{}".format((len(aclient.similarcrsstrings[interaction.guild.id])), str(math.ceil(len(aclient.similarcrsstrings[interaction.guild.id])/10)))
+    i = 0
+    emojidict = {
+      1: "1️⃣",
+      2: "2️⃣",
+    }
+
+    for similarcourse in aclient.similarcrsstrings[interaction.guild.id][:2]:
+      i += 1
+      txt += "\n{} {}".format(emojidict[i],similarcourse)
+    for similarcourse in aclient.similarcrsstrings[interaction.guild.id][2:10]:
+      i += 1
+      txt += "\n {}) {}".format(i,similarcourse)
+
+    newResult.set_footer(text=txt)
+    newResult.add_field(name="**Instructor**", value="{}".format(aclient.courses[interaction.guild.id][0].instructor.title()), inline=True)
+    newResult.add_field(name="**Section**", value="{}".format(aclient.courses[interaction.guild.id][0].section), inline=True)
+    newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(aclient.courses[interaction.guild.id][0]))), inline=True)
+
+    coursename = re.sub(r'[^a-zA-Z]', '', aclient.courses[interaction.guild.id][0].dept)
+    newResult.set_image(url="attachment://{}_{}.png".format(coursename, aclient.courses[interaction.guild.id][0].number))
+
+    return newResult
+
+
+def goToFirstPage(interaction, aclient):
+    oldResult = discord.Embed(
+      color=0xF59F16,
+      title = "**{} {}**".format(aclient.courses[interaction.guild.id][0].dept, aclient.courses[interaction.guild.id][0].number),
+    )
+
+    oldResult.set_author(
+    name = 'MU Grades',
+    icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+    )
+
+    txt = "Similar search results ({}):\t\t\t\t\t\t\t\t\t\t    Page 1/{}".format((len(aclient.similarcrsstrings[interaction.guild.id])), str(math.ceil(len(aclient.similarcrsstrings[interaction.guild.id])/10)))
+    i = 0
+    emojidict = {
+      1: "1️⃣",
+      2: "2️⃣",
+    }
+
+    for similarcourse in aclient.similarcrsstrings[interaction.guild.id][:2]:
+      i += 1
+      txt += "\n{} {}".format(emojidict[i],similarcourse)
+    for similarcourse in aclient.similarcrsstrings[interaction.guild.id][2:10]:
+      i += 1
+      txt += "\n {}) {}".format(i,similarcourse)
+
+    oldResult.set_footer(text=txt)
+    oldResult.add_field(name="**Instructor**", value="{}".format(aclient.courses[interaction.guild.id][0].instructor.title()), inline=True)
+    oldResult.add_field(name="**Section**", value="{}".format(aclient.courses[interaction.guild.id][0].section), inline=True)
+    oldResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(aclient.courses[interaction.guild.id][0]))), inline=True)
+
+    coursename = re.sub(r'[^a-zA-Z]', '', aclient.courses[interaction.guild.id][0].dept)
+    oldResult.set_image(url="attachment://{}_{}.png".format(coursename, aclient.courses[interaction.guild.id][0].number))
+
+    return oldResult
+
 
 def getGifEmbed(dance, interaction):
     actions = {
