@@ -399,7 +399,7 @@ def getMenuEmbed(hall, interaction, expanded):
       embed.set_footer(
       text = "Menu subject to change"
       )
-      embed.add_field(name="\u200b", value="**🍽️\tTODAY'S MENU\t🍽️**", inline = False)
+      embed.add_field(name="\u200b", value=f"""**🍽️\t{"TODAY'S " if list(times.values())[0] != "Closed" else ""}MENU\t🍽️**""", inline = False)
       for category in menu:
         itemstxt = ""
         for item in menu[category]:
