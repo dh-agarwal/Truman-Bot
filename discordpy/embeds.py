@@ -242,6 +242,8 @@ def getCovidEmbed(interaction):
     timestamp=interaction.created_at
     )
 
+    embed.set_thumbnail(url="https://showme.missouri.edu/wp-content/uploads/2022/07/bc-fusion-medical-animation-rnr8D3FNUNY-unsplash-bc.jpg")
+
     embed.set_author(
       name = "MU COVID INFO",
       url="https://missouri.edu/covid",
@@ -449,6 +451,7 @@ def getDiningEmbed(choice, interaction):
 
     return embed
 
+
 def helpEmbed(interaction):
 
   embed = discord.Embed(
@@ -466,7 +469,7 @@ def helpEmbed(interaction):
     text="Please message QAZx#0551 on discord for any questions/inquiries"
   )
 
-  embed.add_field(name="``/grades [query]``", value="• Displays the grade distribution for the specified class in a nicely formatted bar table", inline=False)
+  embed.add_field(name="``/courses [query]``", value="• Displays the grade distribution for the specified class in a nicely formatted bar table", inline=False)
   embed.add_field(name="``/menus [dining hall]``", value="• Displays the menu and hours for that day at the specified dining hall", inline=False)
   embed.add_field(name="``/dining [all/open]``", value="• Displays a list of all/open dining halls", inline=False)
   embed.add_field(name="``/directory [first-name] [last-name]``", value="• Searches through the directory, displays the student's information", inline=False)

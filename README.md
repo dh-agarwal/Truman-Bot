@@ -1,6 +1,6 @@
 Main commands that Truman Bot uses:
 
-    /grades - Displays the grade distribution for the specified class in a nicely formatted bar table
+    /courses - Displays the grade distribution for the specified class in a nicely formatted bar table
 
     /menus - Displays the menu and hours for that day at the specified dining hall
 
