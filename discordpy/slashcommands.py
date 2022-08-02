@@ -1,6 +1,7 @@
 from dotenv import load_dotenv, find_dotenv
 import sys
 import os
+
 load_dotenv(find_dotenv())
 sys.path.insert(1, os.getenv('FILE'))
 from discord import app_commands

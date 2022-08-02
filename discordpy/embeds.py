@@ -87,7 +87,7 @@ def minimizeCourse(interaction, aclient):
 def movePage(interaction, aclient):
     newResult = discord.Embed(
       color=0xF59F16,
-      title = "**{} {}**".format(aclient.courses[interaction.guild.id][0].dept, aclient.courses[interaction.guild.id][0].number),
+      title = f"**{aclient.courses[interaction.guild.id][0].dept} {aclient.courses[interaction.guild.id][0].number}**"
     )
 
     newResult.set_author(
@@ -95,7 +95,7 @@ def movePage(interaction, aclient):
     icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
     )
 
-    txt = "Similar search results ({}):\t\t\t\t\t\t\t\t\t\t    Page {}/{}".format((len(aclient.similarcrsstrings[interaction.guild.id])),aclient.page[interaction.guild.id]+1,str(math.ceil(len(aclient.similarcrsstrings[interaction.guild.id])/10)))
+    txt = f"Similar search results ({(len(aclient.similarcrsstrings[interaction.guild.id]))}):\t\t\t\t\t\t\t\t\t\t    Page {aclient.page[interaction.guild.id]+1}/{str(math.ceil(len(aclient.similarcrsstrings[interaction.guild.id])/10))}"
     emojidict = {
       1: "1️⃣",
       2: "2️⃣",
@@ -129,7 +129,7 @@ def movePage(interaction, aclient):
 def expandCourse(interaction, aclient):
     newResult = discord.Embed(
     color=0xF59F16,
-    title = "**{} {}**".format(aclient.courses[interaction.guild.id][0].dept, aclient.courses[interaction.guild.id][0].number),
+    title = f"**{aclient.courses[interaction.guild.id][0].dept} {aclient.courses[interaction.guild.id][0].number}**"
     )
 
     newResult.set_author(
@@ -137,7 +137,7 @@ def expandCourse(interaction, aclient):
     icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
     )
 
-    txt = "Similar search results ({}):\t\t\t\t\t\t\t\t\t\t    Page 1/{}".format((len(aclient.similarcrsstrings[interaction.guild.id])), str(math.ceil(len(aclient.similarcrsstrings[interaction.guild.id])/10)))
+    txt = f"Similar search results ({(len(aclient.similarcrsstrings[interaction.guild.id]))}):\t\t\t\t\t\t\t\t\t\t    Page 1/{str(math.ceil(len(aclient.similarcrsstrings[interaction.guild.id])/10))}"
     i = 0
     emojidict = {
       1: "1️⃣",
@@ -146,18 +146,18 @@ def expandCourse(interaction, aclient):
 
     for similarcourse in aclient.similarcrsstrings[interaction.guild.id][:2]:
       i += 1
-      txt += "\n{} {}".format(emojidict[i],similarcourse)
+      txt += f"\n{emojidict[i]} {similarcourse}"
     for similarcourse in aclient.similarcrsstrings[interaction.guild.id][2:10]:
       i += 1
-      txt += "\n {}) {}".format(i,similarcourse)
+      txt += f"\n {i}) {similarcourse}"
 
     newResult.set_footer(text=txt)
-    newResult.add_field(name="**Instructor**", value="{}".format(aclient.courses[interaction.guild.id][0].instructor.title()), inline=True)
-    newResult.add_field(name="**Section**", value="{}".format(aclient.courses[interaction.guild.id][0].section), inline=True)
-    newResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(aclient.courses[interaction.guild.id][0]))), inline=True)
+    newResult.add_field(name="**Instructor**", value=f"{aclient.courses[interaction.guild.id][0].instructor.title()}", inline=True)
+    newResult.add_field(name="**Section**", value=f"{aclient.courses[interaction.guild.id][0].section}", inline=True)
+    newResult.add_field(name="**Total Students**", value=f"{str(Course.getTotalStudents(aclient.courses[interaction.guild.id][0]))}", inline=True)
 
     coursename = re.sub(r'[^a-zA-Z]', '', aclient.courses[interaction.guild.id][0].dept)
-    newResult.set_image(url="attachment://{}_{}.png".format(coursename, aclient.courses[interaction.guild.id][0].number))
+    newResult.set_image(url=f"attachment://{coursename}_{aclient.courses[interaction.guild.id][0].number}.png")
 
     return newResult
 
@@ -165,7 +165,7 @@ def expandCourse(interaction, aclient):
 def goToFirstPage(interaction, aclient):
     oldResult = discord.Embed(
       color=0xF59F16,
-      title = "**{} {}**".format(aclient.courses[interaction.guild.id][0].dept, aclient.courses[interaction.guild.id][0].number),
+      title = f"**{aclient.courses[interaction.guild.id][0].dept} {aclient.courses[interaction.guild.id][0].number}**"
     )
 
     oldResult.set_author(
@@ -173,7 +173,7 @@ def goToFirstPage(interaction, aclient):
     icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
     )
 
-    txt = "Similar search results ({}):\t\t\t\t\t\t\t\t\t\t    Page 1/{}".format((len(aclient.similarcrsstrings[interaction.guild.id])), str(math.ceil(len(aclient.similarcrsstrings[interaction.guild.id])/10)))
+    txt = f"Similar search results ({(len(aclient.similarcrsstrings[interaction.guild.id]))}):\t\t\t\t\t\t\t\t\t\t    Page 1/{str(math.ceil(len(aclient.similarcrsstrings[interaction.guild.id])/10))}"
     i = 0
     emojidict = {
       1: "1️⃣",
@@ -188,12 +188,12 @@ def goToFirstPage(interaction, aclient):
       txt += "\n {}) {}".format(i,similarcourse)
 
     oldResult.set_footer(text=txt)
-    oldResult.add_field(name="**Instructor**", value="{}".format(aclient.courses[interaction.guild.id][0].instructor.title()), inline=True)
-    oldResult.add_field(name="**Section**", value="{}".format(aclient.courses[interaction.guild.id][0].section), inline=True)
-    oldResult.add_field(name="**Total Students**", value="{}".format(str(Course.getTotalStudents(aclient.courses[interaction.guild.id][0]))), inline=True)
+    oldResult.add_field(name="**Instructor**", value=f"{aclient.courses[interaction.guild.id][0].instructor.title()}", inline=True)
+    oldResult.add_field(name="**Section**", value=f"{aclient.courses[interaction.guild.id][0].section}", inline=True)
+    oldResult.add_field(name="**Total Students**", value=f"{str(Course.getTotalStudents(aclient.courses[interaction.guild.id][0]))}", inline=True)
 
     coursename = re.sub(r'[^a-zA-Z]', '', aclient.courses[interaction.guild.id][0].dept)
-    oldResult.set_image(url="attachment://{}_{}.png".format(coursename, aclient.courses[interaction.guild.id][0].number))
+    oldResult.set_image(url=f"attachment://{coursename}_{aclient.courses[interaction.guild.id][0].number}.png")
 
     return oldResult
 
