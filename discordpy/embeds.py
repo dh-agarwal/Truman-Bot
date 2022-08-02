@@ -448,3 +448,29 @@ def getDiningEmbed(choice, interaction):
       )
 
     return embed
+
+def helpEmbed(interaction):
+
+  embed = discord.Embed(
+    title="Truman Bot Commands",
+    color=0xF59F16,
+    timestamp=interaction.created_at
+  )
+
+  embed.set_author(
+    name = "Truman Bot",
+    icon_url='https://i.pinimg.com/originals/b7/dc/4b/b7dc4b733225b5981c48060a9f7e1ccb.jpg'
+  )
+
+  embed.set_footer(
+    text="Please message QAZx#0551 on discord for any questions/inquiries"
+  )
+
+  embed.add_field(name="``/grades [query]``", value="• Displays the grade distribution for the specified class in a nicely formatted bar table", inline=False)
+  embed.add_field(name="``/menus [dining hall]``", value="• Displays the menu and hours for that day at the specified dining hall", inline=False)
+  embed.add_field(name="``/dining [all/open]``", value="• Displays a list of all/open dining halls", inline=False)
+  embed.add_field(name="``/directory [first-name] [last-name]``", value="• Searches through the directory, displays the student's information", inline=False)
+  embed.add_field(name="``/rec``", value="• Shows hours for the Rec Facility", inline=False)
+  embed.add_field(name="``/covid``", value="• Covid info for Mizzou", inline=False)
+
+  return embed

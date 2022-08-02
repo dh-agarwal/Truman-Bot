@@ -263,7 +263,7 @@ class ShowMenu(discord.ui.View):
     super().__init__()
     self.value = None
 
-  @discord.ui.button(label="Show Menu", emoji="<:dropdownarrow:1001307846169870427>", style=discord.ButtonStyle.blurple)
+  @discord.ui.button(label="Show Menu", emoji="<:dropdownarrow:1001307846169870427>", style=discord.ButtonStyle.green)
   async def showmenu(self,interaction:discord.Interaction, button:discord.ui.Button):
     await interaction.response.defer()
     await interaction.followup.send(view=HideMenu(), embed=getMenuEmbed(aclient.hall[interaction.guild.id], interaction, True))
@@ -273,7 +273,7 @@ class HideMenu(discord.ui.View):
     super().__init__()
     self.value = None
 
-  @discord.ui.button(label="Hide Menu", emoji="<:upwardarrow:1001308391496503316>", style=discord.ButtonStyle.blurple)
+  @discord.ui.button(label="Hide Menu", emoji="<:upwardarrow:1001308391496503316>", style=discord.ButtonStyle.green)
   async def showmenu(self,interaction:discord.Interaction, button:discord.ui.Button):
     await interaction.response.defer()
     await interaction.followup.send(view=ShowMenu(), embed=getMenuEmbed(aclient.hall[interaction.guild.id], interaction, False))
@@ -432,7 +432,7 @@ async def dining(interaction: discord.Interaction, choice : str):
 
 #GRADES
 @tree.command(name = "courses", description='Searches and displays data for a specified course')
-@app_commands.rename(info='search')
+@app_commands.rename(info='query')
 @app_commands.describe(info='ex. CS 3050 2018 Spring Xu')
 async def courses(interaction: discord.Interaction, info: str):
     await interaction.response.defer()
@@ -509,6 +509,14 @@ async def courses(interaction: discord.Interaction, info: str):
       )
 
       await interaction.followup.send(embed=embed)
+
+
+#HELP
+@tree.command(name = "help", description='Gives information for Truman Bot commands')
+async def help(interaction: discord.Interaction):
+    await interaction.response.defer()
+    await interaction.followup.send(embed=helpEmbed(interaction))
+
 
 #TOKEN
 aclient.run(os.getenv('TOKEN'))
